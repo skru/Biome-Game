@@ -33,7 +33,10 @@ public class Chunk : MonoBehaviour {
 	
 	//public static List<Chunk> chunksWaiting = new List<Chunk>();
 	public static List<Chunk> chunks = new List<Chunk>();
-	public static int worldWidth {
+
+    public List<string> cubePositions = new List<string>();
+
+    public static int worldWidth {
 		get { return World.currentWorld.worldWidth; }
 	}
 	public static int width {
@@ -53,8 +56,9 @@ public class Chunk : MonoBehaviour {
 	protected MeshFilter meshFilter;
 	protected bool initialized = false;
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 		
 		chunks.Add(this);
 		
@@ -141,7 +145,7 @@ public class Chunk : MonoBehaviour {
 	public virtual IEnumerator CalculateMapFromScratch() {
 		
 		map = new byte[width, height, width];
-		
+        
 		Random.seed = World.currentWorld.seed;
 		Vector3 grain0Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
 		Vector3 grain1Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
@@ -155,11 +159,16 @@ public class Chunk : MonoBehaviour {
 			{
 				for (int z = 0; z < width; z++)
 				{
-					map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
+                    Vector3 pos = new Vector3(x, y, z);
+                    pos = pos + transform.position;
+                    map[x, y, z] = GetTheoreticalByte(pos, grain0Offset, grain1Offset, grain2Offset);
+                    
+
 				
 				}
 			}
 		}
+        
 		yield return 0;
 		StartCoroutine(CreateVisualMesh());
 		
@@ -195,9 +204,9 @@ public class Chunk : MonoBehaviour {
 		List<Vector3> verts = new List<Vector3>();
 		List<Vector2> uvs = new List<Vector2>();
 		List<int> tris = new List<int>();
-		
-		
-		for (int x = 0; x < width; x++)
+
+        cubePositions.Clear();
+        for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
 			{
@@ -226,9 +235,12 @@ public class Chunk : MonoBehaviour {
 					// Front
 					if (IsTransparent(x, y, z + 1))
 						BuildFace (brick, new Vector3(x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris);
-					
-					
-				}
+
+                    Vector3 t = new Vector3(x, y, z) + transform.position;
+                    cubePositions.Add(t.ToString());
+
+
+                }
 			}
 		}
 					
@@ -242,7 +254,7 @@ public class Chunk : MonoBehaviour {
 		
 		meshCollider.sharedMesh = null;
 		meshCollider.sharedMesh = visualMesh;
-		yield return 0;
+		yield return null;
 		
 	}
 	public virtual void BuildFace(byte brick, Vector3 corner, Vector3 up, Vector3 right, bool reversed, List<Vector3> verts, List<Vector2> uvs, List<int> tris)

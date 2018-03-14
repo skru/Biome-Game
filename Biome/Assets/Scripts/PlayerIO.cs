@@ -79,10 +79,18 @@ public class PlayerIO : MonoBehaviour {
 					}
 				}
 			}
-            
 
+            //Debug.Log("START");
             foreach (KeyValuePair<Chunk, List<Vector3>> c in chunkDict)
             {
+                //Debug.Log("ChUNK");
+                //for (int i = 0; i < c.Key.cubePositions.Count; i++)
+                //{
+                //   Debug.Log(c.Key.cubePositions[i]);
+                //}
+
+                //Debug.Log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
                 for (int xe = 0; xe < c.Value.Count; xe++)
                 {
                     if (c.Key != null)
@@ -95,10 +103,16 @@ public class PlayerIO : MonoBehaviour {
                         }
                         else
                         {
-                            //Debug.Log(c.Key.IsBrick(0, c.Value[xe], c.Key));
-                            if (c.Key.IsBrick(0, c.Value[xe], c.Key) != 0)
+                            Vector3 t = p;
+                            t.x = Mathf.FloorToInt(c.Value[xe].x);
+                            t.y = Mathf.FloorToInt(c.Value[xe].y);
+                            t.z = Mathf.FloorToInt(c.Value[xe].z);
+                            //Debug.Log(c.Key.cubePositions.Contains(t.ToString()));
+                            //Debug.Log(t.ToString());
+                            //if (c.Key.IsBrick(0, c.Value[xe], c.Key) != 0)
+                            if (c.Key.cubePositions.Contains(t.ToString()))
                             {
-                                c.Key.SetBrick(0, c.Value[xe], c.Key);
+                                c.Key.SetBrick(0, t, c.Key);
                                 // create debris
                                 Rigidbody clone;
                                 float offsetY;
@@ -111,7 +125,7 @@ public class PlayerIO : MonoBehaviour {
                                 {
                                     offsetY = 0.750F;
                                 }
-                                clone = Instantiate(cube, c.Value[xe], transform.rotation) as Rigidbody;
+                                clone = Instantiate(cube, t, transform.rotation) as Rigidbody;
                                 clone.velocity = transform.TransformDirection(Vector3.forward * 10);
                                 Material m = clone.GetComponent<Renderer>().material;
 
@@ -128,6 +142,7 @@ public class PlayerIO : MonoBehaviour {
                     } 
                 }
                 StartCoroutine(c.Key.CreateVisualMesh());
+                //Debug.Log("END");
             }
         } 
 		
