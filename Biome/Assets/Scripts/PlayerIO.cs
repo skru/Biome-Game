@@ -14,8 +14,9 @@ public class PlayerIO : MonoBehaviour {
 
 	public float maxInteractionRange = 8;
 	public int damageRadius = 1;
+    public bool createDebris = true;
 	
-	public byte selectedInventory = 0;
+	//public byte selectedInventory = 0;
 
     public Rigidbody cube;
 
@@ -29,7 +30,66 @@ public class PlayerIO : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (! Input.GetMouseButtonDown(0) ) return;	
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            damageRadius = 0;
+        }
+        else if (Input.GetKey(KeyCode.Alpha2))
+        {
+            damageRadius = 1;
+        }
+        else if (Input.GetKey(KeyCode.Alpha3))
+        {
+            damageRadius = 2;
+        }
+        else if (Input.GetKey(KeyCode.Alpha4))
+        {
+            damageRadius = 3;
+        }
+        else if (Input.GetKey(KeyCode.Alpha5))
+        {
+            damageRadius = 4;
+        }
+        else if (Input.GetKey(KeyCode.Alpha6))
+        {
+            damageRadius = 5;
+        }
+        else if (Input.GetKey(KeyCode.Alpha7))
+        {
+            damageRadius = 6;
+        }
+        else if (Input.GetKey(KeyCode.Alpha8))
+        {
+            damageRadius = 7;
+        }
+        else if (Input.GetKey(KeyCode.Alpha9))
+        {
+            damageRadius = 8;
+        }
+        else if (Input.GetKey(KeyCode.Alpha0))
+        {
+            damageRadius = 20;
+        }
+        else if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            Debug.Log("SHIFT");
+            if (createDebris)
+            {
+                createDebris = false;
+            }
+            else
+            {
+                createDebris = true;
+            }
+        }
+        else if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+            
+
+
+        if (! Input.GetMouseButtonDown(0) ) return;	
 		Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
 		RaycastHit hit;	
 		if (Physics.Raycast(ray, out hit, maxInteractionRange))
@@ -80,73 +140,55 @@ public class PlayerIO : MonoBehaviour {
 				}
 			}
 
-            //Debug.Log("START");
             foreach (KeyValuePair<Chunk, List<Vector3>> c in chunkDict)
             {
-                //Debug.Log("ChUNK");
-                //for (int i = 0; i < c.Key.cubePositions.Count; i++)
-                //{
-                //   Debug.Log(c.Key.cubePositions[i]);
-                //}
-
-                //Debug.Log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
                 for (int xe = 0; xe < c.Value.Count; xe++)
                 {
-                    if (c.Key != null)
-                    {
-                        
-                        byte cubeColor = c.Key.GetByte(c.Value[xe]);
+                    //if (c.Key != null)
+                    //{
+                        Vector3 t = p;
+                        t.x = Mathf.FloorToInt(c.Value[xe].x);
+                        t.y = Mathf.FloorToInt(c.Value[xe].y);
+                        t.z = Mathf.FloorToInt(c.Value[xe].z);
+                        byte cubeColor = c.Key.GetByte(t);
                         if (Input.GetKey(KeyCode.Tab))
                         {
-                            c.Key.SetBrick(1, c.Value[xe], c.Key);
+                            c.Key.SetBrick(1, t, c.Key);
                         }
                         else
                         {
-                            Vector3 t = p;
-                            t.x = Mathf.FloorToInt(c.Value[xe].x);
-                            t.y = Mathf.FloorToInt(c.Value[xe].y);
-                            t.z = Mathf.FloorToInt(c.Value[xe].z);
-                            //Debug.Log(c.Key.cubePositions.Contains(t.ToString()));
-                            //Debug.Log(t.ToString());
-                            //if (c.Key.IsBrick(0, c.Value[xe], c.Key) != 0)
-                            if (c.Key.cubePositions.Contains(t.ToString()))
+                            if (c.Key.cubePositions.Contains(t))
                             {
                                 c.Key.SetBrick(0, t, c.Key);
-                                // create debris
-                                Rigidbody clone;
-                                float offsetY;
-                                float d = (cubeColor % 8 - 1) / 8f;
-                                if (cubeColor <= 7)
+
+                                if (createDebris)
                                 {
-                                    offsetY = 0.875F;
+                                    Rigidbody clone;
+                                    float offsetY;
+                                    float d = (cubeColor % 8 - 1) / 8f;
+
+                                    if (cubeColor < 8)
+                                    {
+                                        offsetY = 0.875F;
+                                    }
+                                    else
+                                    {
+                                        offsetY = 0.750F;
+                                    }
+
+                                    clone = Instantiate(cube, t, transform.rotation) as Rigidbody;
+                                    clone.velocity = transform.TransformDirection(Vector3.forward * 10);
+                                    Material m = clone.GetComponent<Renderer>().material;
+
+                                    m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
+                                    m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
                                 }
-                                else
-                                {
-                                    offsetY = 0.750F;
-                                }
-                                clone = Instantiate(cube, t, transform.rotation) as Rigidbody;
-                                clone.velocity = transform.TransformDirection(Vector3.forward * 10);
-                                Material m = clone.GetComponent<Renderer>().material;
-
-                                m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
-                                m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
-
-
-
                             }
-                        }
-
-                            
-                        
-                    } 
+                        }  
+                    //} 
                 }
                 StartCoroutine(c.Key.CreateVisualMesh());
-                //Debug.Log("END");
             }
         } 
-		
 	}
-
-
 }
