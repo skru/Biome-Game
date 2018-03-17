@@ -364,15 +364,10 @@ public class Chunk : MonoBehaviour {
 		for (int a = 0; a < chunks.Count; a++)
 		{
 			Vector3 cpos = chunks[a].transform.position;
-
-			//Debug.Log (cpos + "CPOS" + pos + "POS");
-			//Debug.Log (pos + "POS");
-			
-			if ( ( pos.x < cpos.x) || (pos.z < cpos.z) || (pos.x > cpos.x + width) || (pos.z > cpos.z + width) ) continue;
+			if ( ( pos.x < cpos.x) || (pos.y < cpos.y)||(pos.z < cpos.z) || (pos.x > cpos.x + width) || (pos.y > cpos.y + height)||(pos.z > cpos.z + width) ) continue;
 			return chunks[a];
 			
 		}
-		//Debug.Log ("NULL");
 		return null;
 		
 	}

@@ -207,9 +207,9 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 0
+  m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
+  m_AllowDynamicResolution: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -228,7 +228,9 @@ MonoBehaviour:
   maxInteractionRange: 400
   damageRadius: 3
   createDebris: 1
-  cube: {fileID: 54299028843423734, guid: 4454558febf32f9469a580614d7415bb, type: 2}
+  debrisLifetime: 5
+  poolSize: 100000
+  cube: {fileID: 1443084204782276, guid: 4454558febf32f9469a580614d7415bb, type: 2}
 --- !u!131 &435125303
 GUITexture:
   m_ObjectHideFlags: 0
@@ -363,10 +365,10 @@ MonoBehaviour:
         threshold: 45
       - condition: 4
         threshold: 0.5
-  worldWidth: 16
+  worldWidth: 8
   chunkWidth: 16
-  chunkHeight: 100
-  seed: -2062701798
+  chunkHeight: 16
+  seed: 55098820
   viewRange: 101
   brickHeight: 1
   chunkFab: {fileID: 11400000, guid: 0823cae39ac1f1147b3653dc7db245a2, type: 2}
