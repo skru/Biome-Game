@@ -10,6 +10,7 @@ public class PlayerIO : MonoBehaviour {
 	public static int height {
 		get { return World.currentWorld.chunkHeight; }
 	}
+
 	public static PlayerIO currentPlayerIO;
 	public float maxInteractionRange = 8;
 	public int damageRadius = 1;
@@ -19,6 +20,8 @@ public class PlayerIO : MonoBehaviour {
     public GameObject cube;
     public Queue<GameObject> objectPool;
     System.Random rand = new System.Random();
+    public float viewRange = 30;
+    public Chunk chunkFab;
 
     // Use this for initialization
     void Start () {
@@ -34,6 +37,37 @@ public class PlayerIO : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        for (int a = 0; a < Chunk.chunks.Count; a++)
+        {
+            Vector3 pos = Chunk.chunks[a].transform.position;
+            Vector3 delta = pos - transform.position;
+            delta.y = 0;
+            if (delta.magnitude < viewRange + width * 3) continue;
+            Destroy(Chunk.chunks[a].gameObject);
+        }
+
+
+        for (float x = transform.position.x - viewRange; x < transform.position.x + viewRange; x += width)
+        {
+            for (float z = transform.position.z - viewRange; z < transform.position.z + viewRange; z += width)
+            {
+                Vector3 pos = new Vector3(x, 0, z);
+                pos.x = Mathf.Floor(pos.x / (float)width) * width;
+                pos.z = Mathf.Floor(pos.z / (float)width) * width;
+                // Shave square.
+                Vector3 delta = pos - transform.position;
+                delta.y = 0;
+                if (delta.magnitude > viewRange) continue;
+                Chunk chunk = Chunk.FindChunk(pos);
+                if (chunk != null)
+                {
+                    continue;
+                }
+                chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
+            }
+        }
+
         if (Input.GetKey(KeyCode.Alpha1)) damageRadius = 0;       
         else if (Input.GetKey(KeyCode.Alpha2)) damageRadius = 1;
         else if (Input.GetKey(KeyCode.Alpha3)) damageRadius = 2;
@@ -50,8 +84,8 @@ public class PlayerIO : MonoBehaviour {
             else createDebris = true;
         }
         else if (Input.GetKey("escape")) Application.Quit();
-        if (! Input.GetMouseButtonDown(0) ) return;	
-
+        if (! Input.GetMouseButtonDown(0) ) return;
+        
 		Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
 		RaycastHit hit;	
 		if (Physics.Raycast(ray, out hit, maxInteractionRange))
@@ -66,15 +100,14 @@ public class PlayerIO : MonoBehaviour {
 
 			p.y /= World.currentWorld.brickHeight;
 			p -= hit.normal / 4;
-  
             for (float x = p.x - damageRadius; x < p.x + damageRadius+1; x++) {
 				for (float y = p.y - damageRadius; y < p.y + damageRadius+1; y++) {
 					for (float z = p.z - damageRadius; z < p.z + damageRadius+1; z++) {
                         Chunk chunk = hit.transform.GetComponent<Chunk>();
 						Vector3 t = p;
-						t.x = Mathf.Abs (x);
+						t.x = Mathf.Round (x);
 						t.y = Mathf.Round (y);
-						t.z = Mathf.Abs (z);                       
+						t.z = Mathf.Round (z);                       
                         float distance = Vector3.Distance (t, p);
                         if (distance <= damageRadius) {
 						    if (x >= chunk.transform.position.x && x <= (chunk.transform.position.x + width) && z >= chunk.transform.position.z && z <= (chunk.transform.position.z + width) && y >= chunk.transform.position.y && y <= (chunk.transform.position.y + height)) {
@@ -120,13 +153,13 @@ public class PlayerIO : MonoBehaviour {
                     byte cubeColor = c.Key.GetByte(t);
                     if (Input.GetKey(KeyCode.Tab))
                     {
-                        c.Key.SetBrick(1, t, c.Key);
+                        c.Key.SetBrick(1, t);
                     }
                     else
                     {
                         if (c.Key.cubePositions.Contains(t))
                         {
-                            c.Key.SetBrick(0, t, c.Key);
+                            c.Key.SetBrick(0, t);
 
                             if (createDebris)
                             {
@@ -153,7 +186,7 @@ public class PlayerIO : MonoBehaviour {
                                 StartCoroutine(waiter(clone));
                             }
                         }
-                    }   
+                    }
                 }
                 StartCoroutine(c.Key.CreateVisualMesh());
             }

@@ -231,6 +231,8 @@ MonoBehaviour:
   debrisLifetime: 5
   poolSize: 100000
   cube: {fileID: 1443084204782276, guid: 4454558febf32f9469a580614d7415bb, type: 2}
+  viewRange: 50
+  chunkFab: {fileID: 11400000, guid: 0823cae39ac1f1147b3653dc7db245a2, type: 2}
 --- !u!131 &435125303
 GUITexture:
   m_ObjectHideFlags: 0
@@ -284,6 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b19aff51390c91040b9cf58efcd70390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultBrickTexture: {fileID: 0}
   biomes:
   - name: Flatland
     desc: 
@@ -365,14 +368,13 @@ MonoBehaviour:
         threshold: 45
       - condition: 4
         threshold: 0.5
-  worldWidth: 8
   chunkWidth: 16
   chunkHeight: 16
-  seed: 55098820
-  viewRange: 101
+  seed: 1109694352
+  worldWidth: 0
+  viewRange: 60
   brickHeight: 1
   chunkFab: {fileID: 11400000, guid: 0823cae39ac1f1147b3653dc7db245a2, type: 2}
-  player: {fileID: 954404431}
 --- !u!4 &509131603
 Transform:
   m_ObjectHideFlags: 0
