@@ -29,44 +29,16 @@ public class PlayerIO : MonoBehaviour {
         objectPool = new Queue<GameObject>();
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject obj = Instantiate(cube);
-            obj.SetActive(false);
-            objectPool.Enqueue(obj);
+            //GameObject obj = Instantiate(cube);
+            //obj.SetActive(false);
+            //objectPool.Enqueue(obj);
         }
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        for (int a = 0; a < Chunk.chunks.Count; a++)
-        {
-            Vector3 pos = Chunk.chunks[a].transform.position;
-            Vector3 delta = pos - transform.position;
-            delta.y = 0;
-            if (delta.magnitude < viewRange + width * 3) continue;
-            Destroy(Chunk.chunks[a].gameObject);
-        }
-
-
-        for (float x = transform.position.x - viewRange; x < transform.position.x + viewRange; x += width)
-        {
-            for (float z = transform.position.z - viewRange; z < transform.position.z + viewRange; z += width)
-            {
-                Vector3 pos = new Vector3(x, 0, z);
-                pos.x = Mathf.Floor(pos.x / (float)width) * width;
-                pos.z = Mathf.Floor(pos.z / (float)width) * width;
-                // Shave square.
-                Vector3 delta = pos - transform.position;
-                delta.y = 0;
-                if (delta.magnitude > viewRange) continue;
-                Chunk chunk = Chunk.FindChunk(pos);
-                if (chunk != null)
-                {
-                    continue;
-                }
-                chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
-            }
-        }
+        
 
         if (Input.GetKey(KeyCode.Alpha1)) damageRadius = 0;       
         else if (Input.GetKey(KeyCode.Alpha2)) damageRadius = 1;
@@ -161,30 +133,30 @@ public class PlayerIO : MonoBehaviour {
                         {
                             c.Key.SetBrick(0, t);
 
-                            if (createDebris)
-                            {
-                                float offsetY;
-                                float d = (cubeColor % 8 - 1) / 8f;
-                                if (cubeColor < 8)
-                                {
-                                    offsetY = 0.875F;
-                                }
-                                else
-                                {
-                                    offsetY = 0.750F;
-                                }
-                                GameObject clone;
-                                clone = objectPool.Dequeue();
-                                Rigidbody rclone = clone.GetComponent<Rigidbody>();
-                                rclone.transform.position = t;
-                                rclone.transform.rotation = Quaternion.identity;
-                                rclone.velocity = transform.TransformDirection(Vector3.forward * 10);
-                                Material m = rclone.GetComponent<Renderer>().material;
-                                m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
-                                m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
-                                clone.SetActive(true);
-                                StartCoroutine(waiter(clone));
-                            }
+                            //if (createDebris)
+                            //{
+                            //    float offsetY;
+                            //    float d = (cubeColor % 8 - 1) / 8f;
+                            //    if (cubeColor < 8)
+                            //    {
+                            //        offsetY = 0.875F;
+                            //    }
+                            //    else
+                            //    {
+                            //        offsetY = 0.750F;
+                            //    }
+                            //    GameObject clone;
+                            //    clone = objectPool.Dequeue();
+                            //    Rigidbody rclone = clone.GetComponent<Rigidbody>();
+                            //    rclone.transform.position = t;
+                            //    rclone.transform.rotation = Quaternion.identity;
+                            //    rclone.velocity = transform.TransformDirection(Vector3.forward * 10);
+                            //    Material m = rclone.GetComponent<Renderer>().material;
+                            //    m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
+                            //    m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
+                            //    clone.SetActive(true);
+                            //    StartCoroutine(waiter(clone));
+                            //}
                         }
                     }
                 }

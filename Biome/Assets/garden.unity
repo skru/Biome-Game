@@ -369,12 +369,13 @@ MonoBehaviour:
       - condition: 4
         threshold: 0.5
   chunkWidth: 16
-  chunkHeight: 16
+  chunkHeight: 64
   seed: 1109694352
   worldWidth: 0
-  viewRange: 60
+  viewRange: 80
   brickHeight: 1
   chunkFab: {fileID: 11400000, guid: 0823cae39ac1f1147b3653dc7db245a2, type: 2}
+  player: {fileID: 435125302}
 --- !u!4 &509131603
 Transform:
   m_ObjectHideFlags: 0
