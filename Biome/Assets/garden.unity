@@ -365,9 +365,9 @@ MonoBehaviour:
         threshold: 45
       - condition: 4
         threshold: 0.5
-  worldWidth: 8
-  chunkWidth: 16
-  chunkHeight: 16
+  worldWidth: 4
+  chunkWidth: 32
+  chunkHeight: 32
   seed: 55098820
   viewRange: 101
   brickHeight: 1
