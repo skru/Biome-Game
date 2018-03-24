@@ -14,12 +14,12 @@ public class PlayerIO : MonoBehaviour {
 	public static PlayerIO currentPlayerIO;
 	public float maxInteractionRange = 8;
 	public int damageRadius = 1;
-    public bool createDebris = true;
+    public bool createDebris = false;
     public float debrisLifetime;
     public int poolSize;
     public GameObject cube;
     public Queue<GameObject> objectPool;
-    System.Random rand = new System.Random();
+   // System.Random rand = new System.Random();
     public float viewRange = 30;
     public Chunk chunkFab;
 
@@ -29,9 +29,9 @@ public class PlayerIO : MonoBehaviour {
         objectPool = new Queue<GameObject>();
         for (int i = 0; i < poolSize; i++)
         {
-            //GameObject obj = Instantiate(cube);
-            //obj.SetActive(false);
-            //objectPool.Enqueue(obj);
+            GameObject obj = Instantiate(cube);
+            obj.SetActive(false);
+            objectPool.Enqueue(obj);
         }
     }
 	
@@ -50,7 +50,7 @@ public class PlayerIO : MonoBehaviour {
         else if (Input.GetKey(KeyCode.Alpha8)) damageRadius = 7;
         else if (Input.GetKey(KeyCode.Alpha9)) damageRadius = 8;
         else if (Input.GetKey(KeyCode.Alpha0)) damageRadius = 20;
-        else if (Input.GetKey(KeyCode.LeftAlt))
+        else if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             if (createDebris) createDebris = false;
             else createDebris = true;
@@ -107,6 +107,10 @@ public class PlayerIO : MonoBehaviour {
                                             chunkDict[chunk].AddRange(new List<Vector3> { t });
                                         }
                                     }
+                                    else
+                                    {
+                                        Debug.Log("Chunk null");
+                                    }
                                 }									
 						    }
 						}
@@ -120,7 +124,7 @@ public class PlayerIO : MonoBehaviour {
                 {
                     Vector3 t = p;
                     t.x = Mathf.FloorToInt(c.Value[xe].x);
-                    t.y = Mathf.FloorToInt(c.Value[xe].y);
+                    t.y = Mathf.RoundToInt(c.Value[xe].y);
                     t.z = Mathf.FloorToInt(c.Value[xe].z);
                     byte cubeColor = c.Key.GetByte(t);
                     if (Input.GetKey(KeyCode.Tab))
@@ -133,30 +137,30 @@ public class PlayerIO : MonoBehaviour {
                         {
                             c.Key.SetBrick(0, t);
 
-                            //if (createDebris)
-                            //{
-                            //    float offsetY;
-                            //    float d = (cubeColor % 8 - 1) / 8f;
-                            //    if (cubeColor < 8)
-                            //    {
-                            //        offsetY = 0.875F;
-                            //    }
-                            //    else
-                            //    {
-                            //        offsetY = 0.750F;
-                            //    }
-                            //    GameObject clone;
-                            //    clone = objectPool.Dequeue();
-                            //    Rigidbody rclone = clone.GetComponent<Rigidbody>();
-                            //    rclone.transform.position = t;
-                            //    rclone.transform.rotation = Quaternion.identity;
-                            //    rclone.velocity = transform.TransformDirection(Vector3.forward * 10);
-                            //    Material m = rclone.GetComponent<Renderer>().material;
-                            //    m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
-                            //    m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
-                            //    clone.SetActive(true);
-                            //    StartCoroutine(waiter(clone));
-                            //}
+                            if (createDebris)
+                            {
+                                float offsetY;
+                                float d = (cubeColor % 8 - 1) / 8f;
+                                if (cubeColor < 8)
+                                {
+                                    offsetY = 0.875F;
+                                }
+                                else
+                                {
+                                    offsetY = 0.750F;
+                                }
+                                GameObject clone;
+                                clone = objectPool.Dequeue();
+                                Rigidbody rclone = clone.GetComponent<Rigidbody>();
+                                rclone.transform.position = t;
+                                rclone.transform.rotation = Quaternion.identity;
+                                rclone.velocity = transform.TransformDirection(Vector3.forward * 10);
+                                Material m = rclone.GetComponent<Renderer>().material;
+                                m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
+                                m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
+                                clone.SetActive(true);
+                                StartCoroutine(waiter(clone));
+                            }
                         }
                     }
                 }
