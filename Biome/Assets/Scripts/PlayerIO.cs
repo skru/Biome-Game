@@ -72,9 +72,9 @@ public class PlayerIO : MonoBehaviour {
 
 			p.y /= World.currentWorld.brickHeight;
 			p -= hit.normal / 4;
-            for (float x = p.x - damageRadius; x < p.x + damageRadius+1; x++) {
-				for (float y = p.y - damageRadius; y < p.y + damageRadius+1; y++) {
-					for (float z = p.z - damageRadius; z < p.z + damageRadius+1; z++) {
+            for (float x = p.x - damageRadius; x < p.x + damageRadius; x++) {
+				for (float y = p.y - damageRadius; y < p.y + damageRadius; y++) {
+					for (float z = p.z - damageRadius; z < p.z + damageRadius; z++) {
                         Chunk chunk = hit.transform.GetComponent<Chunk>();
 						Vector3 t = p;
 						t.x = Mathf.Round (x);
@@ -124,7 +124,7 @@ public class PlayerIO : MonoBehaviour {
                 {
                     Vector3 t = p;
                     t.x = Mathf.FloorToInt(c.Value[xe].x);
-                    t.y = Mathf.RoundToInt(c.Value[xe].y);
+                    t.y = Mathf.FloorToInt(c.Value[xe].y);
                     t.z = Mathf.FloorToInt(c.Value[xe].z);
                     byte cubeColor = c.Key.GetByte(t);
                     if (Input.GetKey(KeyCode.Tab))
@@ -154,7 +154,7 @@ public class PlayerIO : MonoBehaviour {
                                 Rigidbody rclone = clone.GetComponent<Rigidbody>();
                                 rclone.transform.position = t;
                                 rclone.transform.rotation = Quaternion.identity;
-                                rclone.velocity = transform.TransformDirection(Vector3.forward * 10);
+                                rclone.velocity = transform.TransformDirection(Vector3.forward * 20);
                                 Material m = rclone.GetComponent<Renderer>().material;
                                 m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
                                 m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
