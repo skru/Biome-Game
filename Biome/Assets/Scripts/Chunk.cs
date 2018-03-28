@@ -49,7 +49,7 @@ public class Chunk : MonoBehaviour
     }
 
     public byte[,,] map;
-    public Mesh visualMesh;
+    Mesh visualMesh;
     protected MeshRenderer meshRenderer;
     protected MeshCollider meshCollider;
     protected MeshFilter meshFilter;
@@ -137,7 +137,7 @@ public class Chunk : MonoBehaviour
 
     public virtual IEnumerator CalculateMapFromScratch()
     {
-        //yield return 0;
+        yield return null;
 
         map = new byte[width, height, width];
 
@@ -171,7 +171,7 @@ public class Chunk : MonoBehaviour
             {
                 StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
             }
-        yield return 1;
+        yield return null;
 
 
 
@@ -190,6 +190,7 @@ public class Chunk : MonoBehaviour
 
     public virtual IEnumerator CreateVisualMesh()
     {
+        //yield return null;
 
         if (this == null)
             
@@ -200,7 +201,7 @@ public class Chunk : MonoBehaviour
             {
                 StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
             }
-            yield return 0;
+            yield return null;
         }
 
         visualMesh = new Mesh();
@@ -222,24 +223,24 @@ public class Chunk : MonoBehaviour
                     byte brick = map[x, y, z];
                     // Left wall
                     if (IsTransparent(x - 1, y, z))
-                        BuildFace(brick, new Vector3(x, y, z), Vector3.up, Vector3.forward, false, verts, uvs, tris);
+                        StartCoroutine(BuildFace(brick, new Vector3(x, y, z), Vector3.up, Vector3.forward, false, verts, uvs, tris));
                     // Right wall
                     if (IsTransparent(x + 1, y, z))
-                        BuildFace(brick, new Vector3(x + 1, y, z), Vector3.up, Vector3.forward, true, verts, uvs, tris);
+                        StartCoroutine(BuildFace(brick, new Vector3(x + 1, y, z), Vector3.up, Vector3.forward, true, verts, uvs, tris));
 
                     // Bottom wall
                     if (IsTransparent(x, y - 1, z))
-                        BuildFace(brick, new Vector3(x, y, z), Vector3.forward, Vector3.right, false, verts, uvs, tris);
+                        StartCoroutine(BuildFace(brick, new Vector3(x, y, z), Vector3.forward, Vector3.right, false, verts, uvs, tris));
                     // Top wall
                     if (IsTransparent(x, y + 1, z))
-                        BuildFace(brick, new Vector3(x, y + 1, z), Vector3.forward, Vector3.right, true, verts, uvs, tris);
+                        StartCoroutine(BuildFace(brick, new Vector3(x, y + 1, z), Vector3.forward, Vector3.right, true, verts, uvs, tris));
 
                     // Back
                     if (IsTransparent(x, y, z - 1))
-                        BuildFace(brick, new Vector3(x, y, z), Vector3.up, Vector3.right, true, verts, uvs, tris);
+                        StartCoroutine(BuildFace(brick, new Vector3(x, y, z), Vector3.up, Vector3.right, true, verts, uvs, tris));
                     // Front
                     if (IsTransparent(x, y, z + 1))
-                        BuildFace(brick, new Vector3(x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris);
+                        StartCoroutine(BuildFace(brick, new Vector3(x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris));
 
                     Vector3 t = new Vector3(x, y, z) + transform.position;
                     cubePositions.Add(t);
@@ -262,8 +263,9 @@ public class Chunk : MonoBehaviour
         yield return null;
 
     }
-    public virtual void BuildFace(byte brick, Vector3 corner, Vector3 up, Vector3 right, bool reversed, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
+    public virtual IEnumerator BuildFace(byte brick, Vector3 corner, Vector3 up, Vector3 right, bool reversed, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
+        
         int index = verts.Count;
 
 
@@ -314,7 +316,7 @@ public class Chunk : MonoBehaviour
             tris.Add(index + 2);
             tris.Add(index + 0);
         }
-        //yield return 0;
+        yield return 5;
     }
     public virtual bool IsTransparent(int x, int y, int z)
     {
