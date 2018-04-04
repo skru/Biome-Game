@@ -54,11 +54,12 @@ public class Chunk : MonoBehaviour
     protected MeshCollider meshCollider;
     protected MeshFilter meshFilter;
     protected bool initialized = false;
+    
 
     // Use this for initialization
     void Start()
     {
-
+        
         chunks.Add(this);
 
         meshRenderer = GetComponent<MeshRenderer>();
@@ -70,9 +71,9 @@ public class Chunk : MonoBehaviour
         if (chunksWaiting[0] == this)
         {
             StartCoroutine(CalculateMapFromScratch());
+           
+         
         }
-        //StartCoroutine(CreateVisualMesh());
-
     }
 
     // Update is called once per frame
@@ -137,7 +138,10 @@ public class Chunk : MonoBehaviour
 
     public virtual IEnumerator CalculateMapFromScratch()
     {
-        yield return null;
+      
+        //yield return null;
+
+        
 
         map = new byte[width, height, width];
 
@@ -147,34 +151,37 @@ public class Chunk : MonoBehaviour
         Vector3 grain2Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
 
 
-            for (int x = 0; x < width; x++)
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int z = 0; z < width; z++)
                 {
-                    for (int z = 0; z < width; z++)
-                    {
-                        map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
 
-                    }
+                //Debug.Log(GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset));
+                    map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
+                   
+
+
                 }
             }
-            StartCoroutine(CreateVisualMesh());
+        }
 
-            initialized = true;
-
-            chunksWaiting.Remove(this);
-
-            while ((chunksWaiting.Count > 0) && (chunksWaiting[0] == null))
-                chunksWaiting.RemoveAt(0);
-
-            if (chunksWaiting.Count > 0)
-            {
-                StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
-            }
+        StartCoroutine(CreateVisualMesh());
         yield return null;
+        initialized = true;
 
+        chunksWaiting.Remove(this);
 
+        while ((chunksWaiting.Count > 0) && (chunksWaiting[0] == null))
+            chunksWaiting.RemoveAt(0);
 
+        if (chunksWaiting.Count > 0)
+        {
+            StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
+        }
+        
+      
 
     }
 
@@ -184,24 +191,19 @@ public class Chunk : MonoBehaviour
         float noiseY = Mathf.Abs((pos.y + offset.y) * scale);
         float noiseZ = Mathf.Abs((pos.z + offset.z) * scale);
         return (Noise.Generate(noiseX, noiseY, noiseZ) + 1) / 2;
-
     }
 
 
     public virtual IEnumerator CreateVisualMesh()
     {
-        //yield return null;
-
         if (this == null)
-            
         {
             while (chunksWaiting[0] == null)
                 chunksWaiting.RemoveAt(0);
             if (chunksWaiting.Count > 0)
-            {
+            {               
                 StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
             }
-            yield return null;
         }
 
         visualMesh = new Mesh();
@@ -223,32 +225,52 @@ public class Chunk : MonoBehaviour
                     byte brick = map[x, y, z];
                     // Left wall
                     if (IsTransparent(x - 1, y, z))
+                    {
+                        //yield return null;
                         StartCoroutine(BuildFace(brick, new Vector3(x, y, z), Vector3.up, Vector3.forward, false, verts, uvs, tris));
+                    }
+
                     // Right wall
                     if (IsTransparent(x + 1, y, z))
+                    {
+                        //yield return null;
                         StartCoroutine(BuildFace(brick, new Vector3(x + 1, y, z), Vector3.up, Vector3.forward, true, verts, uvs, tris));
+                    }
 
                     // Bottom wall
                     if (IsTransparent(x, y - 1, z))
+                    {
+                        //yield return null;
                         StartCoroutine(BuildFace(brick, new Vector3(x, y, z), Vector3.forward, Vector3.right, false, verts, uvs, tris));
+                    }
                     // Top wall
                     if (IsTransparent(x, y + 1, z))
+                    {
+                        //yield return null;
                         StartCoroutine(BuildFace(brick, new Vector3(x, y + 1, z), Vector3.forward, Vector3.right, true, verts, uvs, tris));
+                    }
 
                     // Back
                     if (IsTransparent(x, y, z - 1))
+                    {
+                        //yield return null;
                         StartCoroutine(BuildFace(brick, new Vector3(x, y, z), Vector3.up, Vector3.right, true, verts, uvs, tris));
+                    }
                     // Front
                     if (IsTransparent(x, y, z + 1))
+                    {
+                        //yield return null;
                         StartCoroutine(BuildFace(brick, new Vector3(x, y, z + 1), Vector3.up, Vector3.right, false, verts, uvs, tris));
+                    }
 
                     Vector3 t = new Vector3(x, y, z) + transform.position;
                     cubePositions.Add(t);
 
                 }
             }
+            
         }
-
+        
         visualMesh.vertices = verts.ToArray();
         visualMesh.uv = uvs.ToArray();
         visualMesh.triangles = tris.ToArray();
@@ -256,18 +278,15 @@ public class Chunk : MonoBehaviour
         visualMesh.RecalculateNormals();
 
         meshFilter.mesh = visualMesh;
-
-
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = visualMesh;
         yield return null;
-
     }
+
     public virtual IEnumerator BuildFace(byte brick, Vector3 corner, Vector3 up, Vector3 right, bool reversed, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
         
         int index = verts.Count;
-
 
         float uvRow = ((corner.y + up.y) % 7);
         if (uvRow >= 4) uvRow = 7 - uvRow;
@@ -276,8 +295,6 @@ public class Chunk : MonoBehaviour
 
         if (brick < 8)
             uvCorner.y += 0.125f;
-
-
 
         corner.y *= brickHeight;
         up.y *= brickHeight;
@@ -316,11 +333,11 @@ public class Chunk : MonoBehaviour
             tris.Add(index + 2);
             tris.Add(index + 0);
         }
-        yield return 5;
+        yield return null;
     }
     public virtual bool IsTransparent(int x, int y, int z)
     {
-        //if (y < 0) return false;
+        //if (y < 0) return false; // removes bottom faces
         byte brick = GetByte(x, y, z);
         switch (brick)
         {
@@ -337,12 +354,14 @@ public class Chunk : MonoBehaviour
         //if ((y < 0) || (y >= height))
         //    return 0;
 
+
+
         Vector3 worldPos = new Vector3(x, y, z) + transform.position;
         if (!initialized)
             return GetTheoreticalByte(worldPos);
 
 
-        if ((x < 0) || (z < 0) || (y<0)||(y>=height)|| (x >= width) || (z >= width))
+        if ((x < 0) || (y < 0) || (z < 0) || (x >= width) || ( y >= height) || (z >= width))
         {
 
             Chunk chunk = Chunk.FindChunk(worldPos);
@@ -367,7 +386,6 @@ public class Chunk : MonoBehaviour
 
     public static Chunk FindChunk(Vector3 pos)
     {
-
         for (int a = 0; a < chunks.Count; a++)
         {
             Vector3 cpos = chunks[a].transform.position;
@@ -380,61 +398,82 @@ public class Chunk : MonoBehaviour
 
     }
 
-    public bool SetBrick (byte brick, Vector3 worldPos)
-	{
-		worldPos -= transform.position;
-		return SetBrick(brick, Mathf.FloorToInt(worldPos.x),Mathf.FloorToInt(worldPos.y),Mathf.FloorToInt(worldPos.z));
-	}
-	public bool SetBrick (byte brick, int x, int y, int z)
-	{
-		//if ( ( x < 0) || (y < 0) || (z < 0) || (x >= width) || (y >= height) || (z >= width) )
-		//{
-		//	return false;
-		//}
-		
-		if (map[x,y,z] == brick) return false;
-		map[x,y,z] = brick;
-        //StartCoroutine(CreateVisualMesh());
+    
+    public void SetBrick(byte brick, Vector3 worldPos)
+    {
+       worldPos -= transform.position;
+        //StartCoroutine(SetBrick(brick, Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z)));
+       SetBrick(brick, Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
+    }
+    public void SetBrick(byte brick, int x, int y, int z)
+        //public IEnumerator SetBrick(byte brick, int x, int y, int z)
+    {
+        //if ( ( x < 0) || (y < 0) || (z < 0) || (x >= width) || (y >= height) || (z >= width) )
+        //{
+        //	return false;
+        //}
+        
+        if (map[x, y, z] != brick)
+        {
+            map[x, y, z] = brick;
 
-        if (x == 0)
-        {
-            Chunk chunk = FindChunk(new Vector3(x - 2, y, z) + transform.position);
-            if (chunk != null)
-                StartCoroutine(chunk.CreateVisualMesh());
+            if (x == 0)
+            {
+                Chunk chunk = FindChunk(new Vector3(x - 2, y, z) + transform.position);
+                if (chunk != null && chunk.isActiveAndEnabled)
+                {
+                    StartCoroutine(chunk.CreateVisualMesh());
+                    //yield return null;
+                }
+                    
+            }
+            if (x == width - 1)
+            {
+                Chunk chunk = FindChunk(new Vector3(x + 2, y, z) + transform.position);
+                if (chunk != null && chunk.isActiveAndEnabled)
+                {
+                    StartCoroutine(chunk.CreateVisualMesh());
+                    //yield return null;
+                }
+            }
+            //if (y == 0)
+            //{
+            //    Chunk chunk = FindChunk(new Vector3(x, y - 2, z) + transform.position);
+            //    if (chunk != null && chunk.isActiveAndEnabled)
+            //        StartCoroutine(chunk.CreateVisualMesh());
+            //}
+            //if (y == height - 1)
+            //{
+            //    Chunk chunk = FindChunk(new Vector3(x, y + 2, z) + transform.position);
+            //    if (chunk != null && chunk.isActiveAndEnabled)
+            //        StartCoroutine(chunk.CreateVisualMesh());
+            //}
+            if (z == 0)
+            {
+                Chunk chunk = FindChunk(new Vector3(x, y, z - 2) + transform.position);
+                if (chunk != null && chunk.isActiveAndEnabled)
+                {
+                    StartCoroutine(chunk.CreateVisualMesh());
+                    //yield return null;
+                }
+            }
+            if (z == width - 1)
+            {
+                Chunk chunk = FindChunk(new Vector3(x, y, z + 2) + transform.position);
+                if (chunk != null && chunk.isActiveAndEnabled)
+                {
+                    StartCoroutine(chunk.CreateVisualMesh());
+                    //yield return null;
+                }
+            }
+            //yield return null;
         }
-        if (x == width - 1)
+        else
         {
-            Chunk chunk = FindChunk(new Vector3(x + 2, y, z) + transform.position);
-            if (chunk != null)
-                StartCoroutine(chunk.CreateVisualMesh());
-        }
-        if (y == 0)
-        {
-            Chunk chunk = FindChunk(new Vector3(x, y - 2, z) + transform.position);
-            if (chunk != null)
-                StartCoroutine(chunk.CreateVisualMesh());
-        }
-        if (y == height - 1)
-        {
-            Chunk chunk = FindChunk(new Vector3(x, y + 2, z) + transform.position);
-            if (chunk != null)
-                StartCoroutine(chunk.CreateVisualMesh());
-        }
-        if (z == 0)
-        {
-            Chunk chunk = FindChunk(new Vector3(x, y, z - 2) + transform.position);
-            if (chunk != null)
-                StartCoroutine(chunk.CreateVisualMesh());
-        }
-        if (z == width - 1)
-        {
-            Chunk chunk = FindChunk(new Vector3(x, y, z + 2) + transform.position);
-            if (chunk != null)
-                StartCoroutine(chunk.CreateVisualMesh());
+           // Debug.Log("XXX");
         }
 
-        return true;
-	}
+    }
 }
 
 
