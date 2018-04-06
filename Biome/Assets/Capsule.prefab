@@ -96,11 +96,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deccc7fc828370944a9e35e4500d48f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 195184946827902120}
+  navAgent: {fileID: 195184946827902120}
   radius: 5
   power: 10
   deathLifetime: 5
   followRadius: 100
+  NoPathTime: 5
+  maxInteractionRange: 5
+  damageRadius: 1
+  createDebris: 0
+  debrisLifetime: 10
 --- !u!136 &136225118180906604
 CapsuleCollider:
   m_ObjectHideFlags: 1

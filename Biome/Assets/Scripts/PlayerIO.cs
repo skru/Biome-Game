@@ -13,30 +13,21 @@ public class PlayerIO : MonoBehaviour {
 	}
 
 	public static PlayerIO currentPlayerIO;
-	//public float maxInteractionRange = 8;
-	public float damageRadius = 1F;
-    //public bool createDebris = false;
+
+    public float maxInteractionRange = 100;
+    public float damageRadius = 1F;
+    public bool createDebris = false;
     public float debrisLifetime;
-    public int poolSize;
-    public GameObject cube;
-    public Queue<GameObject> NPCPool;
+    bool alterOrDestroy = false;
+    bool deltaRadius = true;
 
-    public float viewRange = 30;
-    public Chunk chunkFab;
 
-    //Dictionary<Chunk, List<Vector3>> chunkDict = new Dictionary<Chunk, List<Vector3>>();
 
 
     // Use this for initialization
     void Start () {
 		currentPlayerIO = this;
-        //NPCPool = new Queue<GameObject>();
-        //for (int i = 0; i < poolSize; i++)
-        //{
-        //    GameObject obj = Instantiate(cube);
-        //    obj.SetActive(false);
-        //    NPCPool.Enqueue(obj);
-        //}
+        
     }
 	
 	// Update is called once per frame
@@ -54,145 +45,35 @@ public class PlayerIO : MonoBehaviour {
         else if (Input.GetKey(KeyCode.Alpha8)) damageRadius = 7;
         else if (Input.GetKey(KeyCode.Alpha9)) damageRadius = 8;
         else if (Input.GetKey(KeyCode.Alpha0)) damageRadius = 20;
-        //else if (Input.GetKeyDown(KeyCode.LeftAlt))
-        //{
-        //    if (createDebris) createDebris = false;
-        //    else createDebris = true;
-        //}
+        else if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            if (createDebris) createDebris = false;
+            else createDebris = true;
+        }
         else if (Input.GetKey("escape")) Application.Quit();
         if (! Input.GetMouseButtonDown(0) ) return;
-        Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
-        RaycastHit hit;
+
         if (Input.GetKey(KeyCode.Tab))
         {
-            World.currentWorld.DestroyWorld(ray, true);
+            alterOrDestroy = true;
         }
         else
         {
-            World.currentWorld.DestroyWorld(ray, false);
+            alterOrDestroy = false;
         }
-        //Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
-        //RaycastHit hit;	
-        //if (Physics.Raycast(ray, out hit, maxInteractionRange))
-        //{
-        //          chunkDict.Clear();
-        //          Chunk chunk = hit.transform.GetComponent<Chunk>();
-        //          //Debug.Log(chunk.transform.position.y);
-        //	if (chunk != null)
-        //	{
-        //              Vector3 p = hit.point;
-        //              //p.y /= World.currentWorld.brickHeight;
-        //              p -= hit.normal / 4;
-        //              p.x = Mathf.Floor(p.x);
-        //              p.y = Mathf.Floor(p.y);
-        //              p.z = Mathf.Floor(p.z);
-        //              for (float x = p.x - damageRadius; x < p.x + damageRadius+1; x++)
-        //              {
-        //                  for (float y = p.y - damageRadius; y < p.y + damageRadius+1; y++)
-        //                  {
-        //                      for (float z = p.z - damageRadius; z < p.z + damageRadius+1; z++)
-        //                      {
-        //                          Vector3 t = new Vector3(x,y,z);
-        //                          //float distance = Vector3.Distance(t, p);
-        //                          //if (distance <= damageRadius)
-        //                          //{
-        //                              if (x >= chunk.transform.position.x && x < (chunk.transform.position.x + width) && z >= chunk.transform.position.z && z < (chunk.transform.position.z + width) && y >= chunk.transform.position.y && y < (chunk.transform.position.y + height))
-        //                              {
-        //                                  if (!chunkDict.ContainsKey(chunk))
-        //                                  {
-        //                                      chunkDict.Add(chunk, new List<Vector3> { t });
-        //                                  }
-        //                                  else
-        //                                  {
-        //                                      chunkDict[chunk].AddRange(new List<Vector3> { t });
-        //                                  }
-        //                              }
-        //                              else
-        //                              {
-        //                              //Debug.Log("FIND CHUNK");
-        //                                  chunk = Chunk.FindChunk(new Vector3(t.x, t.y, t.z));
-        //                                  if (chunk != null)
-        //                                  {
-        //                                      if (!chunkDict.ContainsKey(chunk))
-        //                                      {
 
-        //                                          chunkDict.Add(chunk, new List<Vector3> { t });
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            deltaRadius = true;
+        }
+        else
+        {
+            deltaRadius = false;
+        }
+        Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        World.currentWorld.AlterWorld(ray, alterOrDestroy, damageRadius, createDebris, debrisLifetime, maxInteractionRange);
+		
+	}
 
-        //                                      }
-        //                                      else
-        //                                      {
-        //                                          chunkDict[chunk].AddRange(new List<Vector3> { t });
-        //                                      }
-        //                                  }
-        //                              else
-        //                              {
-        //                                  //Debug.Log("nochunk");
-        //                              }
-        //                              }
-        //                         // }
-        //                      }
-        //                  }
-        //              }
-
-        //              foreach (KeyValuePair<Chunk, List<Vector3>> c in chunkDict)
-        //              {
-        //                  for (int xe = 0; xe < c.Value.Count; xe++)
-        //                  {
-        //                      Vector3 t = p;
-        //                      t.x = Mathf.RoundToInt(c.Value[xe].x);
-        //                      t.y = Mathf.RoundToInt(c.Value[xe].y);
-        //                      t.z = Mathf.RoundToInt(c.Value[xe].z);
-        //                      byte cubeColor = c.Key.GetByte(t);
-        //                      if (Input.GetKey(KeyCode.Tab))
-        //                      {
-        //                          c.Key.SetBrick(1, t);
-        //                      }
-        //                      else
-        //                      {
-        //                          if (c.Key.cubePositions.Contains(t))
-        //                          {
-        //                              c.Key.SetBrick(0, t);
-        //                              if (createDebris)
-        //                              {
-        //                                  float offsetY;
-        //                                  float d = (cubeColor % 8 - 1) / 8f;
-        //                                  if (cubeColor < 8)
-        //                                  {
-        //                                      offsetY = 0.875F;
-        //                                  }
-        //                                  else
-        //                                  {
-        //                                      offsetY = 0.750F;
-        //                                  }
-        //                                  GameObject clone;
-        //                                  clone = NPCPool.Dequeue();
-        //                                  Rigidbody rclone = clone.GetComponent<Rigidbody>();
-        //                                  rclone.transform.position = t;
-        //                                  rclone.transform.rotation = Quaternion.identity;
-        //                                  rclone.velocity = transform.TransformDirection(Vector3.forward * 20);
-        //                                  Material m = rclone.GetComponent<Renderer>().material;
-        //                                  m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
-        //                                  m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
-        //                                  clone.SetActive(true);
-        //                                  StartCoroutine(Waiter(clone));
-        //                              }
-        //                          }
-        //                      }
-        //                  }
-        //                  StartCoroutine(c.Key.CreateVisualMesh());
-
-        //                  //surface.BuildNavMesh();
-        //              }
-        //          }
-
-        //      } 
-    }
-
-    //IEnumerator Waiter(GameObject clone)
-    //{
-    //    float wait_time = Random.Range(0.5f, debrisLifetime);
-    //    yield return new WaitForSeconds(wait_time);
-    //    clone.SetActive(false);
-    //    NPCPool.Enqueue(clone);
-    //}
+    
 }

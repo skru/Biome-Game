@@ -26,44 +26,42 @@ public class World : MonoBehaviour
     private float delay = 0.1f; // delay update function
 
 
-    public int poolSize;
-    public GameObject capsule;
-    public Queue<GameObject> objectPool;
-    public Queue<GameObject> NPCPool;
+    public int cubePoolSize;
     public GameObject cube;
-    public float debrisLifetime;
+    public Queue<GameObject> cubePool;
 
-    public float maxInteractionRange = 8;
-    public float damageRadius = 1F;
+    // AlterWorld
     Dictionary<Chunk, List<Vector3>> chunkDict = new Dictionary<Chunk, List<Vector3>>();
-    public bool createDebris = false;
+    public int NPCPoolSize;
+    public GameObject capsule;
+    public Queue<GameObject> NPCPool;
+
+
 
     void Awake()
     {
         currentWorld = this;
         if (seed == 0)
             seed = Random.Range(0, int.MaxValue);
-
-        //surface.BuildNavMesh();
-       
     }
 
     void Start()
     {
-        objectPool = new Queue<GameObject>();
-        for (int i = 0; i < poolSize; i++)
+        NPCPool = new Queue<GameObject>();
+        for (int i = 0; i < NPCPoolSize; i++)
         {
             GameObject obj = Instantiate(capsule);
             obj.SetActive(false);
-            objectPool.Enqueue(obj);
+           // obj.GetComponent<NavMeshAgent>().enabled = false;
+            NPCPool.Enqueue(obj);
         }
 
-        NPCPool = new Queue<GameObject>();
-        for (int i = 0; i < poolSize; i++)
+        cubePool = new Queue<GameObject>();
+        for (int i = 0; i < cubePoolSize; i++)
         {
             GameObject obj = Instantiate(cube);
             obj.SetActive(false);
-            NPCPool.Enqueue(obj);
+            cubePool.Enqueue(obj);
         }
     }
 
@@ -121,10 +119,10 @@ public class World : MonoBehaviour
                                     chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
                                     if (Random.value > 0.5)
                                     {
-                                        if (objectPool.Count > 0)
+                                        if (NPCPool.Count > 0)
                                         {
                                             GameObject clone;
-                                            clone = objectPool.Dequeue();
+                                            clone = NPCPool.Dequeue();
                                             clone.GetComponent<AgentController>().GetNPCPos(chunk.transform.position, chunkWidth, chunkHeight);
                                             clone.transform.rotation = Quaternion.identity;
                                             clone.SetActive(true);
@@ -246,18 +244,145 @@ public class World : MonoBehaviour
         Vector3 viewPos = cam.WorldToViewportPoint(pos);
         //if (playerMoving)
         //{
-            if (viewPos.x > -1.2F && viewPos.x <= 1.2F && viewPos.y > -1.2F && viewPos.y <= 1.2F && viewPos.z > 0)
-            {
-                //Debug.Log("moving and in shot");
-                return true;
-            }
-            else
-            {
-                //Debug.Log("XXXXXXXXXt");
-                return false;
-            }
+        if (viewPos.x > -1.2F && viewPos.x <= 1.2F && viewPos.y > -1.2F && viewPos.y <= 1.2F && viewPos.z > 0)
+        {
+            //Debug.Log("moving and in shot");
+            return true;
+        }
+        else
+        {
+            //Debug.Log("XXXXXXXXXt");
+            return false;
+        }
+        //return true;
     }
 
+    public void AlterWorld(Ray ray, bool alterOrDestroy, float damageRadius, bool createDebris, float debrisLifetime, float maxInteractionRange)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, maxInteractionRange))
+        {
+            chunkDict.Clear();
+            Chunk chunk = hit.transform.GetComponent<Chunk>();
+            //Debug.Log(chunk.transform.position.y);
+            if (chunk != null)
+            {
+                Vector3 p = hit.point;
+                p.y /= World.currentWorld.brickHeight;
+                p -= hit.normal / 4;
+                p.x = Mathf.Floor(p.x);
+                p.y = Mathf.Floor(p.y);
+                p.z = Mathf.Floor(p.z);
+                //Debug.Log(hit.point);
+                for (float x = p.x - damageRadius; x < p.x + damageRadius + 1; x++)
+                {
+                    for (float y = p.y - damageRadius; y < p.y + damageRadius + 1; y++)
+                    {
+                        for (float z = p.z - damageRadius; z < p.z + damageRadius + 1; z++)
+                        {
+                            Vector3 t = new Vector3(x, y, z);
+
+                            //float distance = Vector3.Distance(t, p);
+                            //if (distance <= damageRadius)
+                            //{
+                                if (x >= chunk.transform.position.x && x < (chunk.transform.position.x + chunkWidth) && z >= chunk.transform.position.z && z < (chunk.transform.position.z + chunkWidth) && y >= chunk.transform.position.y && y < (chunk.transform.position.y + chunkHeight))
+                                {
+                                    if (!chunkDict.ContainsKey(chunk))
+                                    {
+                                        chunkDict.Add(chunk, new List<Vector3> { t });
+                                    }
+                                    else
+                                    {
+                                        chunkDict[chunk].AddRange(new List<Vector3> { t });
+                                    }
+                                }
+                                else
+                                {
+                                    //Debug.Log("FIND CHUNK");
+                                    chunk = Chunk.FindChunk(new Vector3(t.x, t.y, t.z));
+                                    if (chunk != null)
+                                    {
+                                        if (!chunkDict.ContainsKey(chunk))
+                                        {
+
+                                            chunkDict.Add(chunk, new List<Vector3> { t });
+
+                                        }
+                                        else
+                                        {
+                                            chunkDict[chunk].AddRange(new List<Vector3> { t });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Debug.Log("nochunk");
+                                    }
+                                }
+                            //}
+                        }
+                    }
+                }
+
+                foreach (KeyValuePair<Chunk, List<Vector3>> c in chunkDict)
+                {
+                    for (int xe = 0; xe < c.Value.Count; xe++)
+                    {
+                        Vector3 t = p;
+                        t.x = Mathf.RoundToInt(c.Value[xe].x);
+                        t.y = Mathf.RoundToInt(c.Value[xe].y);
+                        t.z = Mathf.RoundToInt(c.Value[xe].z);
+                        byte cubeColor = c.Key.GetByte(t);
+                        if (alterOrDestroy)
+                        {
+                            c.Key.SetBrick(12, t);
+                        }
+                        else
+                        {
+                            if (c.Key.cubePositions.Contains(t))
+                            {
+                                c.Key.SetBrick(0, t);
+                                if (createDebris)
+                                {
+                                    float offsetY;
+                                    float d = (cubeColor % 8 - 1) / 8f;
+                                    if (cubeColor < 8)
+                                    {
+                                        offsetY = 0.875F;
+                                    }
+                                    else
+                                    {
+                                        offsetY = 0.750F;
+                                    }
+                                    GameObject clone;
+                                    clone = cubePool.Dequeue();
+                                    Rigidbody rclone = clone.GetComponent<Rigidbody>();
+                                    rclone.transform.position = t;
+                                    rclone.transform.rotation = Quaternion.identity;
+                                    rclone.velocity = transform.TransformDirection(Vector3.forward * 20);
+                                    Material m = rclone.GetComponent<Renderer>().material;
+                                    m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
+                                    m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
+                                    clone.SetActive(true);
+                                    StartCoroutine(Waiter(clone, debrisLifetime));
+                                }
+                            }
+                        }
+                    }
+                    StartCoroutine(c.Key.CreateVisualMesh());
+
+                    //surface.BuildNavMesh();
+                }
+            }
+
+        }
+    }
+    IEnumerator Waiter(GameObject clone, float debrisLifetime)
+    {
+        float wait_time = Random.Range(0.5f, debrisLifetime);
+        yield return new WaitForSeconds(wait_time);
+        clone.SetActive(false);
+        cubePool.Enqueue(clone);
+    }
     // void BuildWorldSection (Vector3 playerPos, Vector3 pos)
     //{
 
@@ -287,7 +412,7 @@ public class World : MonoBehaviour
 
     //}
 
- 
+
 
     public static Biome GetIdealBiome(float moisture, float rockiness)
     {
@@ -303,133 +428,6 @@ public class World : MonoBehaviour
             }
         }
         return biome;
-    }
-
-    public void DestroyWorld(Ray ray, bool cord)
-    {
-        
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, maxInteractionRange))
-        {
-            chunkDict.Clear();
-            Chunk chunk = hit.transform.GetComponent<Chunk>();
-            //Debug.Log(chunk.transform.position.y);
-            if (chunk != null)
-            {
-                Vector3 p = hit.point;
-                //p.y /= World.currentWorld.brickHeight;
-                p -= hit.normal / 4;
-                p.x = Mathf.Floor(p.x);
-                p.y = Mathf.Floor(p.y);
-                p.z = Mathf.Floor(p.z);
-                for (float x = p.x - damageRadius; x < p.x + damageRadius + 1; x++)
-                {
-                    for (float y = p.y - damageRadius; y < p.y + damageRadius + 1; y++)
-                    {
-                        for (float z = p.z - damageRadius; z < p.z + damageRadius + 1; z++)
-                        {
-                            Vector3 t = new Vector3(x, y, z);
-                            //float distance = Vector3.Distance(t, p);
-                            //if (distance <= damageRadius)
-                            //{
-                            if (x >= chunk.transform.position.x && x < (chunk.transform.position.x + chunkWidth) && z >= chunk.transform.position.z && z < (chunk.transform.position.z + chunkWidth) && y >= chunk.transform.position.y && y < (chunk.transform.position.y + chunkHeight))
-                            {
-                                if (!chunkDict.ContainsKey(chunk))
-                                {
-                                    chunkDict.Add(chunk, new List<Vector3> { t });
-                                }
-                                else
-                                {
-                                    chunkDict[chunk].AddRange(new List<Vector3> { t });
-                                }
-                            }
-                            else
-                            {
-                                //Debug.Log("FIND CHUNK");
-                                chunk = Chunk.FindChunk(new Vector3(t.x, t.y, t.z));
-                                if (chunk != null)
-                                {
-                                    if (!chunkDict.ContainsKey(chunk))
-                                    {
-
-                                        chunkDict.Add(chunk, new List<Vector3> { t });
-
-                                    }
-                                    else
-                                    {
-                                        chunkDict[chunk].AddRange(new List<Vector3> { t });
-                                    }
-                                }
-                                else
-                                {
-                                    //Debug.Log("nochunk");
-                                }
-                            }
-                            // }
-                        }
-                    }
-                }
-
-                foreach (KeyValuePair<Chunk, List<Vector3>> c in chunkDict)
-                {
-                    for (int xe = 0; xe < c.Value.Count; xe++)
-                    {
-                        Vector3 t = p;
-                        t.x = Mathf.RoundToInt(c.Value[xe].x);
-                        t.y = Mathf.RoundToInt(c.Value[xe].y);
-                        t.z = Mathf.RoundToInt(c.Value[xe].z);
-                        byte cubeColor = c.Key.GetByte(t);
-                        if (cord)
-                            //if (Input.GetKey(KeyCode.Tab))
-                            {
-                            c.Key.SetBrick(12, t);
-                        }
-                        else
-                        {
-                            if (c.Key.cubePositions.Contains(t))
-                            {
-                                c.Key.SetBrick(0, t);
-                                if (createDebris)
-                                {
-                                    float offsetY;
-                                    float d = (cubeColor % 8 - 1) / 8f;
-                                    if (cubeColor < 8)
-                                    {
-                                        offsetY = 0.875F;
-                                    }
-                                    else
-                                    {
-                                        offsetY = 0.750F;
-                                    }
-                                    GameObject clone;
-                                    clone = NPCPool.Dequeue();
-                                    Rigidbody rclone = clone.GetComponent<Rigidbody>();
-                                    rclone.transform.position = t;
-                                    rclone.transform.rotation = Quaternion.identity;
-                                    rclone.velocity = transform.TransformDirection(Vector3.forward * 20);
-                                    Material m = rclone.GetComponent<Renderer>().material;
-                                    m.SetTextureScale("_MainTex", new Vector2(0.125F, 0.125F));
-                                    m.SetTextureOffset("_MainTex", new Vector2(d, offsetY));
-                                    clone.SetActive(true);
-                                    StartCoroutine(Waiter(clone));
-                                }
-                            }
-                        }
-                    }
-                    StartCoroutine(c.Key.CreateVisualMesh());
-
-                    //surface.BuildNavMesh();
-                }
-            }
-
-        }
-    }
-    IEnumerator Waiter(GameObject clone)
-    {
-        float wait_time = Random.Range(0.5f, debrisLifetime);
-        yield return new WaitForSeconds(wait_time);
-        clone.SetActive(false);
-        NPCPool.Enqueue(clone);
     }
 
 
