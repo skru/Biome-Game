@@ -54,12 +54,10 @@ public class Chunk : MonoBehaviour
     protected MeshCollider meshCollider;
     protected MeshFilter meshFilter;
     protected bool initialized = false;
-    
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
-        
+        Debug.Log("BUILD");
         chunks.Add(this);
 
         meshRenderer = GetComponent<MeshRenderer>();
@@ -70,11 +68,19 @@ public class Chunk : MonoBehaviour
 
         if (chunksWaiting[0] == this)
         {
-            StartCoroutine(CalculateMapFromScratch());
-           
-         
+            StartCoroutine(CalculateMapFromScratchAsync());
+            //CalculateMapFromScratch();
+
+
+
         }
     }
+
+    // Use this for initialization
+    //void Start()
+    //{
+        
+    //}
 
     // Update is called once per frame
     //void Update()
@@ -136,7 +142,7 @@ public class Chunk : MonoBehaviour
         //return 0;
     }
 
-    public virtual IEnumerator CalculateMapFromScratch()
+    public virtual IEnumerator CalculateMapFromScratchAsync()
     {
       
         //yield return null;
@@ -178,10 +184,59 @@ public class Chunk : MonoBehaviour
 
         if (chunksWaiting.Count > 0)
         {
-            StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
+            StartCoroutine(chunksWaiting[0].CalculateMapFromScratchAsync());
         }
         
       
+
+    }
+
+    public virtual void CalculateMapFromScratch()
+    {
+
+        //yield return null;
+
+
+
+        map = new byte[width, height, width];
+
+        Random.InitState(World.currentWorld.seed);
+        Vector3 grain0Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
+        Vector3 grain1Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
+        Vector3 grain2Offset = new Vector3(Random.value * 10000, Random.value * 10000, Random.value * 10000);
+
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int z = 0; z < width; z++)
+                {
+
+                    //Debug.Log(GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset));
+                    map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
+
+
+
+                }
+            }
+        }
+
+        StartCoroutine(CreateVisualMesh());
+        //yield return null;
+        initialized = true;
+
+        chunksWaiting.Remove(this);
+
+        while ((chunksWaiting.Count > 0) && (chunksWaiting[0] == null))
+            chunksWaiting.RemoveAt(0);
+
+        if (chunksWaiting.Count > 0)
+        {
+            chunksWaiting[0].CalculateMapFromScratch();
+        }
+
+
 
     }
 
@@ -202,7 +257,7 @@ public class Chunk : MonoBehaviour
                 chunksWaiting.RemoveAt(0);
             if (chunksWaiting.Count > 0)
             {               
-                StartCoroutine(chunksWaiting[0].CalculateMapFromScratch());
+                StartCoroutine(chunksWaiting[0].CalculateMapFromScratchAsync());
             }
         }
 

@@ -235,12 +235,12 @@ MonoBehaviour:
   chunkWidth: 8
   chunkHeight: 56
   seed: 697655289
-  worldWidth: 20
+  worldWidth: 128
   viewRange: 32
   brickHeight: 1
   chunkFab: {fileID: 11400000, guid: 0823cae39ac1f1147b3653dc7db245a2, type: 2}
   player: {fileID: 435125305}
-  cubePoolSize: 1000
+  cubePoolSize: 10000
   cube: {fileID: 1443084204782276, guid: 4454558febf32f9469a580614d7415bb, type: 2}
   NPCPoolSize: 1
   capsule: {fileID: 1086977582106012, guid: d70f50480d786e04e901aec68e6f28ab, type: 2}
@@ -342,7 +342,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1355929466}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 12, z: 0}
+  m_LocalPosition: {x: 64, y: 12, z: 64}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
@@ -378,7 +378,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.y
@@ -386,7 +386,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalRotation.x
@@ -415,12 +415,12 @@ Prefab:
     - target: {fileID: 114668934406215438, guid: 5e9e851c0e142814dac026a256ba2ac0,
         type: 2}
       propertyPath: createDebris
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114668934406215438, guid: 5e9e851c0e142814dac026a256ba2ac0,
         type: 2}
       propertyPath: damageRadius
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114668934406215438, guid: 5e9e851c0e142814dac026a256ba2ac0,
         type: 2}

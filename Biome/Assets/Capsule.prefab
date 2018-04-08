@@ -103,7 +103,7 @@ MonoBehaviour:
   followRadius: 100
   NoPathTime: 5
   maxInteractionRange: 5
-  damageRadius: 1
+  damageRadius: 0
   createDebris: 0
   debrisLifetime: 10
 --- !u!136 &136225118180906604
