@@ -57,7 +57,6 @@ public class Chunk : MonoBehaviour
 
     void Awake()
     {
-        //Debug.Log("BUILD");
         chunks.Add(this);
 
         meshRenderer = GetComponent<MeshRenderer>();
@@ -70,23 +69,9 @@ public class Chunk : MonoBehaviour
         {
             StartCoroutine(CalculateMapFromScratchAsync());
             //CalculateMapFromScratch();
-
-
-
         }
     }
 
-    // Use this for initialization
-    //void Start()
-    //{
-        
-    //}
-
-    // Update is called once per frame
-    //void Update()
-    //{
-
-    //}
 
     void OnDestroy()
     {
@@ -144,11 +129,6 @@ public class Chunk : MonoBehaviour
 
     public virtual IEnumerator CalculateMapFromScratchAsync()
     {
-      
-        //yield return null;
-
-        
-
         map = new byte[width, height, width];
 
         Random.InitState(World.currentWorld.seed);
@@ -163,12 +143,7 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = 0; z < width; z++)
                 {
-
-                //Debug.Log(GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset));
                     map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
-                   
-
-
                 }
             }
         }
@@ -186,18 +161,11 @@ public class Chunk : MonoBehaviour
         {
             StartCoroutine(chunksWaiting[0].CalculateMapFromScratchAsync());
         }
-        
-      
 
     }
 
     public virtual void CalculateMapFromScratch()
     {
-
-        //yield return null;
-
-
-
         map = new byte[width, height, width];
 
         Random.InitState(World.currentWorld.seed);
@@ -212,18 +180,12 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = 0; z < width; z++)
                 {
-
-                    //Debug.Log(GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset));
                     map[x, y, z] = GetTheoreticalByte(new Vector3(x, y, z) + transform.position, grain0Offset, grain1Offset, grain2Offset);
-
-
-
                 }
             }
         }
 
         StartCoroutine(CreateVisualMesh());
-        //yield return null;
         initialized = true;
 
         chunksWaiting.Remove(this);
@@ -235,9 +197,6 @@ public class Chunk : MonoBehaviour
         {
             chunksWaiting[0].CalculateMapFromScratch();
         }
-
-
-
     }
 
     public static float CalculateNoiseValue(Vector3 pos, Vector3 offset, float scale)
@@ -247,7 +206,6 @@ public class Chunk : MonoBehaviour
         float noiseZ = Mathf.Abs((pos.z + offset.z) * scale);
         return (Noise.Generate(noiseX, noiseY, noiseZ) + 1) / 2;
     }
-
 
     public virtual IEnumerator CreateVisualMesh()
     {
@@ -392,7 +350,6 @@ public class Chunk : MonoBehaviour
     }
     public virtual bool IsTransparent(int x, int y, int z)
     {
-        //if (y < 0) return false; // removes bottom faces
         byte brick = GetByte(x, y, z);
         switch (brick)
         {
@@ -402,42 +359,24 @@ public class Chunk : MonoBehaviour
                 return false;
         }
     }
-    public virtual byte GetByte(int x, int y, int z)
-    {
 
-
-        //if ((y < 0) || (y >= height))
-        //    return 0;
-
-
-
-        Vector3 worldPos = new Vector3(x, y, z) + transform.position;
-        if (!initialized)
-            return GetTheoreticalByte(worldPos);
-
-
-        if ((x < 0) || (y < 0) || (z < 0) || (x >= width) || ( y >= height) || (z >= width))
-        {
-
-            Chunk chunk = Chunk.FindChunk(worldPos);
-            if (chunk == this) return 0;
-            if (chunk == null)
-            {
-                return GetTheoreticalByte(worldPos);
-            }
-            return chunk.GetByte(worldPos);
-        }
-        return map[x, y, z];
-    }
-    public virtual byte GetByte(Vector3 worldPos)
-    {
-        worldPos -= transform.position;
-        int x = Mathf.FloorToInt(worldPos.x);
-        int y = Mathf.FloorToInt(worldPos.y);
-        int z = Mathf.FloorToInt(worldPos.z);
-
-        return GetByte(x, y, z);
-    }
+    public virtual byte GetByte (int x, int y , int z)
+	{
+		
+		if ( (x < 0) || (z < 0)  || (x >= width) || (z >= width) || (y < 0) || (y >= height))
+		{
+			return 0;
+			
+		}
+		return map[x,y,z];
+	}
+	public virtual byte GetByte(Vector3 worldPos) {
+		worldPos -= transform.position;
+		int x = Mathf.FloorToInt(worldPos.x);
+		int y = Mathf.FloorToInt(worldPos.y);
+		int z = Mathf.FloorToInt(worldPos.z);
+		return GetByte (x, y, z);
+	}
 
     public static Chunk FindChunk(Vector3 pos)
     {
@@ -457,16 +396,11 @@ public class Chunk : MonoBehaviour
     public void SetBrick(byte brick, Vector3 worldPos)
     {
        worldPos -= transform.position;
-        //StartCoroutine(SetBrick(brick, Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z)));
        SetBrick(brick, Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
     }
     public void SetBrick(byte brick, int x, int y, int z)
-        //public IEnumerator SetBrick(byte brick, int x, int y, int z)
     {
-        //if ( ( x < 0) || (y < 0) || (z < 0) || (x >= width) || (y >= height) || (z >= width) )
-        //{
-        //	return false;
-        //}
+
         
         if (map[x, y, z] != brick)
         {
@@ -478,7 +412,6 @@ public class Chunk : MonoBehaviour
                 if (chunk != null && chunk.isActiveAndEnabled)
                 {
                     StartCoroutine(chunk.CreateVisualMesh());
-                    //yield return null;
                 }
                     
             }
@@ -488,7 +421,6 @@ public class Chunk : MonoBehaviour
                 if (chunk != null && chunk.isActiveAndEnabled)
                 {
                     StartCoroutine(chunk.CreateVisualMesh());
-                    //yield return null;
                 }
             }
             //if (y == 0)
@@ -522,10 +454,6 @@ public class Chunk : MonoBehaviour
                 }
             }
             //yield return null;
-        }
-        else
-        {
-           // Debug.Log("XXX");
         }
 
     }

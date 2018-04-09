@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 //using UnityEngine.AI;
-using UnityEditor;
+//using UnityEditor;
 
+//[RequireComponent(typeof(PlayerIO))]
+//[RequireComponent(typeof(Chunk))]
+//[RequireComponent(typeof(MeshFilter))]
 public class World : MonoBehaviour
 {
 
@@ -70,9 +73,8 @@ public class World : MonoBehaviour
             {
                 Vector3 pos = new Vector3(x, 0, z);
 
-                //BuildWorldSection(playerPos, pos);
                 pos.x = Mathf.Floor(pos.x / (float)chunkWidth) * chunkWidth;
-                //pos.y = Mathf.Floor(pos.y / (float)chunkHeight) * chunkHeight;
+
                 pos.z = Mathf.Floor(pos.z / (float)chunkWidth) * chunkWidth;
                 // Shave square.
                 // Vector3 delta = pos - 0;
@@ -84,9 +86,8 @@ public class World : MonoBehaviour
                 {
                     continue;
                 }
-                //Debug.Log("WW");
                 chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
-                CreateNPC(chunk);
+                //CreateNPC(chunk);
 
 
             }
@@ -94,12 +95,7 @@ public class World : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        
 
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -114,30 +110,16 @@ public class World : MonoBehaviour
 
             float range = viewRange;
 
-            //if (player.GetComponentInParent<Rigidbody>().velocity.magnitude > 0)
-            //{
-            //    playerMoving = true;
-            //}
-            //else
-            //{
-            //    playerMoving = false;
-            //}
-
 
             switch (count)
             {
                 case 0:
-                    if (playerPos.y < 0) range = viewRange / 2;
                     for (float x = playerPos.x - range; x < playerPos.x + range; x += chunkWidth)
                     {
                         for (float z = playerPos.z - range; z < playerPos.z + range; z += chunkWidth)
                         {
                             Vector3 pos = new Vector3(x, playerPos.y, z);
-                            Camera cam = Camera.current;
-                            if (cam != null)
-                            {
-                                if (CheckLoadChunk(pos, playerMoving, cam))
-                                {
+     
                                     //BuildWorldSection(playerPos, pos);
                                     pos.x = Mathf.Round(pos.x / (float)chunkWidth) * chunkWidth;
                                     pos.y = Mathf.Round(pos.y / (float)chunkHeight) * chunkHeight;
@@ -155,54 +137,12 @@ public class World : MonoBehaviour
                                     chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
                                     
                                     CreateNPC(chunk);
-
-                                }
-                            }
-
                         }
-
                     }
                     count += 1;
                     break;
 
 
-                //case 1:
-                //   // if (playerPos.y < 0) range -= viewRange / 2;
-                //    for (float x = playerPos.x - (range/4); x < playerPos.x + (range / 4); x += chunkWidth)
-                //    {
-
-                //        for (float z = playerPos.z - (range / 4); z < playerPos.z + (range / 4); z += chunkWidth)
-                //        {
-                //            Vector3 pos = new Vector3(x, playerPos.y - chunkHeight, z);
-                //            Camera cam = Camera.current;
-                //            if (cam != null)
-                //            {
-                //                if (true)
-                //                {
-                //                    //BuildWorldSection(playerPos, pos);
-                //                    pos.x = Mathf.Floor(pos.x / (float)chunkWidth) * chunkWidth;
-                //                    pos.y = Mathf.Floor(pos.y / (float)chunkHeight) * chunkHeight;
-                //                    pos.z = Mathf.Floor(pos.z / (float)chunkWidth) * chunkWidth;
-                //                    // Shave square.
-                //                    Vector3 delta = pos - playerPos;
-                //                    if (delta.magnitude > range*2) continue;
-
-                //                    Chunk chunk = Chunk.FindChunk(pos);
-                                
-                //                        if (chunk != null)
-                //                        {
-                //                            continue;
-                //                        }
-                //                        chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
-
-                                    
-                //                }
-                //            }
-                //        }
-
-                //    }
-                //    count += 1;
-                //    break;
 
 
                 case 1:
@@ -211,7 +151,7 @@ public class World : MonoBehaviour
                         Vector3 pos = Chunk.chunks[a].transform.position;
                         Vector3 delta = pos - playerPos;
                         if (delta.magnitude < viewRange + chunkWidth * 3 && Chunk.chunks[a].enabled) continue;
-                        //Destroy(Chunk.chunks[a].gameObject);
+                        Destroy(Chunk.chunks[a].gameObject);
                     }
                     count = 0;
                     break;
@@ -239,23 +179,7 @@ public class World : MonoBehaviour
 
         }
     }
-    public bool CheckLoadChunk(Vector3 pos, bool playerMoving, Camera cam)
-    {
-        Vector3 viewPos = cam.WorldToViewportPoint(pos);
-        //if (playerMoving)
-        //{
-        //if (viewPos.x > -1.2F && viewPos.x <= 1.2F && viewPos.y > -1.2F && viewPos.y <= 1.2F && viewPos.z > 0)
-        //{
-        //    //Debug.Log("moving and in shot");
-        //    return true;
-        //}
-        //else
-        //{
-        //    //Debug.Log("XXXXXXXXXt");
-        //    return false;
-        //}
-        return true;
-    }
+
 
     public void AlterWorld(Ray ray, bool alterOrDestroy, float damageRadius, bool createDebris, float debrisLifetime, float maxInteractionRange)
     {
@@ -264,10 +188,6 @@ public class World : MonoBehaviour
         {
             chunkDict.Clear();
             Chunk chunk = hit.transform.GetComponent<Chunk>();
-            //Debug.Log(chunk.transform.position.y);
-            //Debug.Log(chunk.transform.position.x);
-            //Debug.Log(chunk.transform.position.y);
-            //Debug.Log(chunk.transform.position.z);
             if (chunk != null)
             {
                 Vector3 p = hit.point;
@@ -284,7 +204,7 @@ public class World : MonoBehaviour
                 p.x = Mathf.Floor(p.x);
                 p.y = Mathf.Floor(p.y);
                 p.z = Mathf.Floor(p.z);
-                //Debug.Log(hit.point);
+
                 for (float x = p.x - damageRadius; x < p.x + damageRadius + 1; x++)
                 {
                     for (float y = p.y - damageRadius; y < p.y + damageRadius + 1; y++)
@@ -296,9 +216,7 @@ public class World : MonoBehaviour
                             //float distance = Vector3.Distance(t, p);
                             //if (distance <= damageRadius)
                             //{
-                            float distance = Vector3.Distance(t, player.transform.position);
-                            if (distance > 2F)
-                            {
+                           
                                 if (x >= chunk.transform.position.x && x < (chunk.transform.position.x + chunkWidth) && z >= chunk.transform.position.z && z < (chunk.transform.position.z + chunkWidth) && y >= chunk.transform.position.y && y < (chunk.transform.position.y + chunkHeight))
                                 {
                                     if (!chunkDict.ContainsKey(chunk))
@@ -312,7 +230,6 @@ public class World : MonoBehaviour
                                 }
                                 else
                                 {
-                                    //Debug.Log("FIND CHUNK");
                                     chunkNew = Chunk.FindChunk(new Vector3(t.x, t.y, t.z));
                                     if (chunkNew != null)
                                     {
@@ -327,26 +244,33 @@ public class World : MonoBehaviour
                                             chunkDict[chunkNew].AddRange(new List<Vector3> { t });
                                         }
                                     }
-                                    else
-                                    {
-                                        //
-                                        //Debug.Log(t.x);
-                                        //Debug.Log(t.y);
-                                        //Debug.Log(t.z);
-                                        Vector3 newChunkPos = new Vector3(Mathf.Floor(t.x / (float)chunkWidth) * chunkWidth, Mathf.Floor(t.y / (float)chunkHeight) * chunkHeight, Mathf.Floor(t.z / (float)chunkWidth) * chunkWidth);
-                             
-                                        chunk = (Chunk)Instantiate(chunkFab, newChunkPos, Quaternion.identity);
-                                        StartCoroutine(chunk.CalculateMapFromScratchAsync());
-                                        //Debug.Log(chunk.transform.position.x);
-                                        //Debug.Log(chunk.transform.position.y);
-                                        //Debug.Log(chunk.transform.position.z);
-                                        Selection.activeGameObject = chunk.gameObject;
-                                        Debug.Log("nochunk");
-                                        //GetTheoreticalByte(t);
-                                    }
+                               
+                                }
+
+                            Vector3 newChunkPos;
+                            if (t.x % chunkWidth == 0 || t.y % chunkHeight == 0 || t.z % chunkWidth == 0 )
+                            {
+
+                                newChunkPos = new Vector3(Mathf.Floor((t.x - 1) / (float)chunkWidth) * chunkWidth, Mathf.Floor((t.y - 1F) / (float)chunkHeight) * chunkHeight, Mathf.Floor((t.z - 1F) / (float)chunkWidth) * chunkWidth);
+                                Chunk chunkNew2 = Chunk.FindChunk(newChunkPos);
+                                if (chunkNew2 == null)
+                                {
+                                    chunkNew2 = (Chunk)Instantiate(chunkFab, newChunkPos, Quaternion.identity);
+                                    chunkNew2.CalculateMapFromScratch();
+                                   // Selection.activeGameObject = chunkNew2.gameObject;
                                 }
                             }
-                            //}
+                            if ((t.x + 1) % chunkWidth == 0 || (t.y + 1) % chunkHeight == 0 || (t.z + 1) % chunkWidth == 0)
+                            {
+                                newChunkPos = new Vector3(Mathf.Floor((t.x + 1) / (float)chunkWidth) * chunkWidth, Mathf.Floor((t.y + 1F) / (float)chunkHeight) * chunkHeight, Mathf.Floor((t.z + 1F) / (float)chunkWidth) * chunkWidth);
+                                Chunk chunkNew2 = Chunk.FindChunk(newChunkPos);
+                                if (chunkNew2 == null)
+                                {
+                                    chunkNew2 = (Chunk)Instantiate(chunkFab, newChunkPos, Quaternion.identity);
+                                    chunkNew2.CalculateMapFromScratch();
+                                    //Selection.activeGameObject = chunkNew2.gameObject;
+                                }
+                            }
                         }
                     }
                 }
@@ -397,36 +321,12 @@ public class World : MonoBehaviour
                         }
                     }
                     StartCoroutine(c.Key.CreateVisualMesh());
-
-                    //surface.BuildNavMesh();
                 }
             }
 
         }
     }
 
-    float NearestMultipleOf(float x, int multiple)
-    {
-        if (x >= 0)
-        {
-            return x - (x % multiple);
-        }
-        else
-        {
-            return x - (x % -multiple);
-        }
-        
-        //float mod = x % multiple;
-        //float midPoint = multiple / 2.0f;
-        //if (mod > midPoint)
-        //{
-        //    return x + (multiple - mod);
-        //}
-        //else
-        //{
-        //    return x - mod;
-        //}
-    }
 
     IEnumerator Waiter(GameObject clone, float debrisLifetime)
     {
@@ -435,36 +335,7 @@ public class World : MonoBehaviour
         clone.SetActive(false);
         cubePool.Enqueue(clone);
     }
-    // void BuildWorldSection (Vector3 playerPos, Vector3 pos)
-    //{
-
-    //    pos.x = Mathf.Floor(pos.x / (float)chunkWidth) * chunkWidth;
-    //    pos.y = Mathf.Floor(pos.y / (float)chunkHeight) * chunkHeight;
-    //    pos.z = Mathf.Floor(pos.z / (float)chunkWidth) * chunkWidth;
-    //    // Shave square.
-    //    Vector3 delta = pos - playerPos;
-    //    if (delta.magnitude > viewRange)
-    //    {
-    //        //Debug.Log("CHUNKYYY  "+ playerpos.x);
-    //        Chunk chunk = Chunk.FindChunk(pos);
-
-    //        if (chunk != null)
-    //        {
-    //           // Debug.Log("CHUNK2");
-    //            chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
-
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("CUNT");
-    //        }
-    //    }
-
-
-
-    //}
-
-
+  
 
     public static Biome GetIdealBiome(float moisture, float rockiness)
     {

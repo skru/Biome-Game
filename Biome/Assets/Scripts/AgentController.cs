@@ -84,7 +84,7 @@ public class AgentController : MonoBehaviour {
                             {
                                 float distance = Vector3.Distance(navAgent.transform.position, target.position);
                                 //Debug.Log(distance);
-                                if (distance <= 3F)
+                                if (distance <= 5F)
                                 {
                                     navAgent.isStopped = true;
                                 }
