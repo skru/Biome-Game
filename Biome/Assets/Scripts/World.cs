@@ -166,51 +166,51 @@ public class World : MonoBehaviour
                     break;
 
 
-                case 1:
-                   // if (playerPos.y < 0) range -= viewRange / 2;
-                    for (float x = playerPos.x - (range/4); x < playerPos.x + (range / 4); x += chunkWidth)
-                    {
+                //case 1:
+                //   // if (playerPos.y < 0) range -= viewRange / 2;
+                //    for (float x = playerPos.x - (range/4); x < playerPos.x + (range / 4); x += chunkWidth)
+                //    {
 
-                        for (float z = playerPos.z - (range / 4); z < playerPos.z + (range / 4); z += chunkWidth)
-                        {
-                            Vector3 pos = new Vector3(x, playerPos.y - chunkHeight, z);
-                            Camera cam = Camera.current;
-                            if (cam != null)
-                            {
-                                if (true)
-                                {
-                                    //BuildWorldSection(playerPos, pos);
-                                    pos.x = Mathf.Floor(pos.x / (float)chunkWidth) * chunkWidth;
-                                    pos.y = Mathf.Floor(pos.y / (float)chunkHeight) * chunkHeight;
-                                    pos.z = Mathf.Floor(pos.z / (float)chunkWidth) * chunkWidth;
-                                    // Shave square.
-                                    Vector3 delta = pos - playerPos;
-                                    if (delta.magnitude > range*2) continue;
+                //        for (float z = playerPos.z - (range / 4); z < playerPos.z + (range / 4); z += chunkWidth)
+                //        {
+                //            Vector3 pos = new Vector3(x, playerPos.y - chunkHeight, z);
+                //            Camera cam = Camera.current;
+                //            if (cam != null)
+                //            {
+                //                if (true)
+                //                {
+                //                    //BuildWorldSection(playerPos, pos);
+                //                    pos.x = Mathf.Floor(pos.x / (float)chunkWidth) * chunkWidth;
+                //                    pos.y = Mathf.Floor(pos.y / (float)chunkHeight) * chunkHeight;
+                //                    pos.z = Mathf.Floor(pos.z / (float)chunkWidth) * chunkWidth;
+                //                    // Shave square.
+                //                    Vector3 delta = pos - playerPos;
+                //                    if (delta.magnitude > range*2) continue;
 
-                                    Chunk chunk = Chunk.FindChunk(pos);
+                //                    Chunk chunk = Chunk.FindChunk(pos);
                                 
-                                        if (chunk != null)
-                                        {
-                                            continue;
-                                        }
-                                        chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
+                //                        if (chunk != null)
+                //                        {
+                //                            continue;
+                //                        }
+                //                        chunk = (Chunk)Instantiate(chunkFab, pos, Quaternion.identity);
 
                                     
-                                }
-                            }
-                        }
+                //                }
+                //            }
+                //        }
 
-                    }
-                    count += 1;
-                    break;
+                //    }
+                //    count += 1;
+                //    break;
 
 
-                case 2:
+                case 1:
                     for (int a = 0; a < Chunk.chunks.Count; a++)
                     {
                         Vector3 pos = Chunk.chunks[a].transform.position;
                         Vector3 delta = pos - playerPos;
-                        //if (delta.magnitude < viewRange + chunkWidth * 3 && Chunk.chunks[a].enabled) continue;
+                        if (delta.magnitude < viewRange + chunkWidth * 3 && Chunk.chunks[a].enabled) continue;
                         //Destroy(Chunk.chunks[a].gameObject);
                     }
                     count = 0;
@@ -329,17 +329,19 @@ public class World : MonoBehaviour
                                     }
                                     else
                                     {
-                                        Debug.Log("nochunk");
-                                        Debug.Log(t.x);
-                                        Debug.Log(t.y);
-                                        Debug.Log(t.z);
+                                        //
+                                        //Debug.Log(t.x);
+                                        //Debug.Log(t.y);
+                                        //Debug.Log(t.z);
                                         Vector3 newChunkPos = new Vector3(Mathf.Floor(t.x / (float)chunkWidth) * chunkWidth, Mathf.Floor(t.y / (float)chunkHeight) * chunkHeight, Mathf.Floor(t.z / (float)chunkWidth) * chunkWidth);
                              
                                         chunk = (Chunk)Instantiate(chunkFab, newChunkPos, Quaternion.identity);
-                                        Debug.Log(chunk.transform.position.x);
-                                        Debug.Log(chunk.transform.position.y);
-                                        Debug.Log(chunk.transform.position.z);
+                                        StartCoroutine(chunk.CalculateMapFromScratchAsync());
+                                        //Debug.Log(chunk.transform.position.x);
+                                        //Debug.Log(chunk.transform.position.y);
+                                        //Debug.Log(chunk.transform.position.z);
                                         Selection.activeGameObject = chunk.gameObject;
+                                        Debug.Log("nochunk");
                                         //GetTheoreticalByte(t);
                                     }
                                 }

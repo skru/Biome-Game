@@ -57,7 +57,7 @@ public class Chunk : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("BUILD");
+        //Debug.Log("BUILD");
         chunks.Add(this);
 
         meshRenderer = GetComponent<MeshRenderer>();

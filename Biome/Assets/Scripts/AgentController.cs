@@ -128,7 +128,7 @@ public class AgentController : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Destroyed npc");
+            //Debug.Log("Destroyed npc");
             this.gameObject.SetActive(false);
             World.currentWorld.NPCPool.Enqueue(this.gameObject);
         }
