@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
-using System.Collections;
-using System.Collections.Generic;
+
 
 public class PlayerIO : MonoBehaviour {
 
@@ -11,8 +9,9 @@ public class PlayerIO : MonoBehaviour {
 	public static int height {
 		get { return World.currentWorld.chunkHeight; }
 	}
+ 
 
-	public static PlayerIO currentPlayerIO;
+    public static PlayerIO currentPlayerIO;
 
     public float maxInteractionRange = 100;
     public float damageRadius = 1F;
@@ -27,6 +26,8 @@ public class PlayerIO : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		currentPlayerIO = this;
+        //Debug.Log(worldWidth / 2);
+        //currentPlayerIO.GetComponentInParent<GameObject>().transform.position = new Vector3(worldWidth / 2, 60, worldWidth / 2);
         
     }
 	
