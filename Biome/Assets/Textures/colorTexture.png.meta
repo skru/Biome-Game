@@ -60,8 +60,13 @@ TextureImporter:
   - buildTarget: DefaultTexturePlatform
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -80,8 +85,13 @@ TextureImporter:
   - buildTarget: Standalone
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -100,8 +110,13 @@ TextureImporter:
   - buildTarget: iPhone
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -120,8 +135,13 @@ TextureImporter:
   - buildTarget: Android
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -140,8 +160,13 @@ TextureImporter:
   - buildTarget: Windows Store Apps
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -160,8 +185,13 @@ TextureImporter:
   - buildTarget: WebGL
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
