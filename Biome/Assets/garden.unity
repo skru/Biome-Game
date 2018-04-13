@@ -18,9 +18,15 @@ RenderSettings:
   m_FogColor: {r: 0.19607845, g: 0.3137255, b: 0.4784314, a: 0}
   m_FogMode: 1
   m_FogDensity: 0.02
+<<<<<<< HEAD
   m_LinearFogStart: 50
   m_LinearFogEnd: 60
   m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
+=======
+  m_LinearFogStart: 28
+  m_LinearFogEnd: 64
+  m_AmbientSkyColor: {r: 0.8014706, g: 0.8014706, b: 0.8014706, a: 1}
+>>>>>>> parent of caa7a94... adding day/night
   m_AmbientEquatorColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_AmbientGroundColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_AmbientIntensity: 1
