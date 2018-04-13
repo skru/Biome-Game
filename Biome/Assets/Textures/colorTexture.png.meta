@@ -59,8 +59,13 @@ TextureImporter:
   platformSettings:
   - buildTarget: DefaultTexturePlatform
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -74,8 +79,13 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - buildTarget: Standalone
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -89,8 +99,13 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - buildTarget: iPhone
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -104,8 +119,13 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - buildTarget: Android
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -119,8 +139,13 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - buildTarget: Windows Store Apps
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -134,8 +159,13 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - buildTarget: WebGL
 <<<<<<< HEAD
+<<<<<<< HEAD
     maxTextureSize: 8192
     resizeAlgorithm: 1
+=======
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+>>>>>>> parent of caa7a94... adding day/night
 =======
     maxTextureSize: 2048
     resizeAlgorithm: 0
