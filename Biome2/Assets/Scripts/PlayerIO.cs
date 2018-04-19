@@ -71,7 +71,7 @@ public class PlayerIO : MonoBehaviour {
             deltaRadius = false;
         }
         Ray ray = GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
-        World.currentWorld.AlterWorld(ray, alterOrDestroy, damageRadius, createDebris, debrisLifetime, maxInteractionRange);
+        //World.currentWorld.AlterWorld(ray, alterOrDestroy, damageRadius, createDebris, debrisLifetime, maxInteractionRange);
 		
 	}
 

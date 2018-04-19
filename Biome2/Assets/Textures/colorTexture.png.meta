@@ -1,16 +1,13 @@
 fileFormatVersion: 2
 guid: 0f121800dc2e771499bb10bbdd2085fa
-timeCreated: 1523273564
-licenseType: Free
 TextureImporter:
-  fileIDToRecycleName:
-    8900000: generatedCubemap
+  fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -48,7 +45,7 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  alphaUsage: 0
+  alphaUsage: 1
   alphaIsTransparency: 0
   spriteTessellationDetail: -1
   textureType: 0
@@ -58,28 +55,8 @@ TextureImporter:
   textureFormatSet: 0
   platformSettings:
   - buildTarget: DefaultTexturePlatform
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
-=======
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -88,28 +65,8 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - buildTarget: Standalone
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
-=======
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -118,28 +75,8 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - buildTarget: iPhone
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
-=======
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -148,28 +85,8 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - buildTarget: Android
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
-=======
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -178,28 +95,8 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - buildTarget: Windows Store Apps
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
-=======
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -208,28 +105,8 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - buildTarget: WebGL
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
-=======
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
-=======
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
->>>>>>> parent of caa7a94... adding day/night
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50

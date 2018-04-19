@@ -26,6 +26,8 @@ public class AgentController : MonoBehaviour {
     float jumpTime = 3F;
     float offMeshCount = 10F;
     float inactiveCount = 0;
+    Vector3 clickPos;
+    
     //Transform target;
 
     // Use this for initialization
@@ -35,12 +37,14 @@ public class AgentController : MonoBehaviour {
         //Transform target = PlayerIO.currentPlayerIO.transform;
     }
 
-    // Update is called once per frame
+    //Update is called once per frame
     void Update()
     {
+        //clickPos = CameraMovementMouse.currentCamera.clickPos;
         if (inactiveCount < offMeshCount)
         {
-            Transform target = PlayerIO.currentPlayerIO.transform;
+           // Transform target = PlayerIO.currentPlayerIO.transform;
+           Vector3 target = CameraMovementMouse.currentCamera.clickPos;
             if (!isJumping)
             {
                 //if (Input.GetKey(KeyCode.J))
@@ -61,8 +65,8 @@ public class AgentController : MonoBehaviour {
                                 //isJumping = true;
                                 if (NoPathTime > 0.5F)
                                 {
-                                    target.LookAt(target);
-                                    if (transform.position.y > target.transform.position.y)
+                                    //target.LookAt(target.x,target.y,target.z);
+                                    if (transform.position.y > target.y)
                                     {
                                         alterOrDestroy = false;
                                         angle = new Vector3(0, -0.5F, 0);
@@ -75,14 +79,14 @@ public class AgentController : MonoBehaviour {
                                     //Ray ray = new Ray(transform.position, transform.forward + angle);   
                                     //World.currentWorld.AlterWorld(ray, alterOrDestroy, damageRadius, createDebris, debrisLifetime, maxInteractionRange);
                                     NoPathTime = 0;
-                                    navAgent.SetDestination(target.position);
+                                    navAgent.SetDestination(target);
                                 }
                                 NoPathTime += Time.deltaTime;
                                 //StartCoroutine(Jumper(navAgent, target));
                             }
                             else
                             {
-                                float distance = Vector3.Distance(navAgent.transform.position, target.position);
+                                float distance = Vector3.Distance(navAgent.transform.position, target);
                                 //Debug.Log(distance);
                                 if (distance <= 5F)
                                 {
@@ -91,7 +95,7 @@ public class AgentController : MonoBehaviour {
                                 else
                                 {
                                     navAgent.isStopped = false;
-                                    navAgent.SetDestination(target.position);
+                                    navAgent.SetDestination(target);
                                 }
                             }
                         }
@@ -99,8 +103,8 @@ public class AgentController : MonoBehaviour {
                         {
                             if (NoPathTime > 0.5F)
                             {
-                                target.LookAt(target);
-                                if (transform.position.y > target.transform.position.y)
+                               // target.LookAt(target);
+                                if (transform.position.y > target.y)
                                 {
                                     alterOrDestroy = false;
                                     angle = new Vector3(0, -0.3F, 0);
@@ -135,24 +139,24 @@ public class AgentController : MonoBehaviour {
     }
 
 
-    //void OnCollisionEnter(Collision col)
-    //{
-    //    //Debug.Log("COLLIDE");
-    //    if (hasLanded)
-    //    {
-    //        if (col.gameObject.tag == "CanDamage")
-    //        {
-    //            this.GetComponent<NavMeshAgent>().enabled = false;
-    //            StartCoroutine(Waiter(this.gameObject));
-    //        }
-                
-    //    }
-    //    else
-    //    {
-    //        hasLanded = true;
-    //    }
-       
-    //}
+    void OnCollisionEnter(Collision col)
+    {
+        //Debug.Log("COLLIDE");
+        if (hasLanded)
+        {
+            if (col.gameObject.tag == "CanDamage")
+            {
+                this.GetComponent<NavMeshAgent>().enabled = false;
+                StartCoroutine(Waiter(this.gameObject));
+            }
+
+        }
+        else
+        {
+            hasLanded = true;
+        }
+
+    }
 
     IEnumerator Waiter(GameObject clone)
     {

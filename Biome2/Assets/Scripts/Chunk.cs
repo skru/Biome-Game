@@ -67,8 +67,8 @@ public class Chunk : MonoBehaviour
 
         if (chunksWaiting[0] == this)
         {
-            StartCoroutine(CalculateMapFromScratchAsync());
-            //CalculateMapFromScratch();
+            //StartCoroutine(CalculateMapFromScratchAsync());
+            CalculateMapFromScratch();
         }
     }
 
@@ -214,7 +214,7 @@ public class Chunk : MonoBehaviour
             while (chunksWaiting[0] == null)
                 chunksWaiting.RemoveAt(0);
             if (chunksWaiting.Count > 0)
-            {               
+            {
                 StartCoroutine(chunksWaiting[0].CalculateMapFromScratchAsync());
             }
         }
@@ -281,9 +281,9 @@ public class Chunk : MonoBehaviour
 
                 }
             }
-            
+
         }
-        
+
         visualMesh.vertices = verts.ToArray();
         visualMesh.uv = uvs.ToArray();
         visualMesh.triangles = tris.ToArray();
@@ -298,7 +298,7 @@ public class Chunk : MonoBehaviour
 
     public virtual IEnumerator BuildFace(byte brick, Vector3 corner, Vector3 up, Vector3 right, bool reversed, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
-        
+
         int index = verts.Count;
 
         float uvRow = ((corner.y + up.y) % 7);
@@ -360,23 +360,24 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    public virtual byte GetByte (int x, int y , int z)
-	{
-		
-		if ( (x < 0) || (z < 0)  || (x >= width) || (z >= width) || (y < 0) || (y >= height))
-		{
-			return 0;
-			
-		}
-		return map[x,y,z];
-	}
-	public virtual byte GetByte(Vector3 worldPos) {
-		worldPos -= transform.position;
-		int x = Mathf.FloorToInt(worldPos.x);
-		int y = Mathf.FloorToInt(worldPos.y);
-		int z = Mathf.FloorToInt(worldPos.z);
-		return GetByte (x, y, z);
-	}
+    public virtual byte GetByte(int x, int y, int z)
+    {
+
+        if ((x < 0) || (z < 0) || (x >= width) || (z >= width) || (y < 0) || (y >= height))
+        {
+            return 0;
+
+        }
+        return map[x, y, z];
+    }
+    public virtual byte GetByte(Vector3 worldPos)
+    {
+        worldPos -= transform.position;
+        int x = Mathf.FloorToInt(worldPos.x);
+        int y = Mathf.FloorToInt(worldPos.y);
+        int z = Mathf.FloorToInt(worldPos.z);
+        return GetByte(x, y, z);
+    }
 
     public static Chunk FindChunk(Vector3 pos)
     {
@@ -392,16 +393,16 @@ public class Chunk : MonoBehaviour
 
     }
 
-    
+
     public void SetBrick(byte brick, Vector3 worldPos)
     {
-       worldPos -= transform.position;
-       SetBrick(brick, Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
+        worldPos -= transform.position;
+        SetBrick(brick, Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y), Mathf.FloorToInt(worldPos.z));
     }
     public void SetBrick(byte brick, int x, int y, int z)
     {
 
-        
+
         if (map[x, y, z] != brick)
         {
             map[x, y, z] = brick;
@@ -413,7 +414,7 @@ public class Chunk : MonoBehaviour
                 {
                     StartCoroutine(chunk.CreateVisualMesh());
                 }
-                    
+
             }
             if (x == width - 1)
             {
@@ -458,5 +459,4 @@ public class Chunk : MonoBehaviour
 
     }
 }
-
 

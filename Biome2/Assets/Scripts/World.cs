@@ -27,7 +27,7 @@ public class World : MonoBehaviour
     int count = 0;
 
     private float timeSinceLastCalled;
-    private float delay = 0.1f; // delay update function
+    private float delay = 0.5f; // delay update function
 
 
     public int cubePoolSize;
@@ -42,7 +42,7 @@ public class World : MonoBehaviour
     public GameObject capsule;
     public Queue<GameObject> NPCPool;
 
-
+    public Camera camera;
 
     void Awake()
     {
@@ -106,15 +106,26 @@ public class World : MonoBehaviour
         {
 
 
-            Vector3 playerPos = player.transform.position;
+            Vector3 playerPos;// = player.transform.position;
 
             float range = viewRange;
-
+            Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+            RaycastHit hit;
+            Physics.Raycast(ray, out hit, 1000);
 
             switch (count)
             {
                 case 0:
-                    for (float x = playerPos.x - range; x < playerPos.x + range; x += chunkWidth)
+                    
+
+                    //chunkDict.Clear();
+                    if (hit.transform == null) break;
+                        playerPos = hit.transform.position;
+                       
+
+
+
+                            for (float x = playerPos.x - range; x < playerPos.x + range; x += chunkWidth)
                     {
                         for (float z = playerPos.z - range; z < playerPos.z + range; z += chunkWidth)
                         {
@@ -146,6 +157,13 @@ public class World : MonoBehaviour
 
 
                 case 1:
+                    //Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+                    //RaycastHit hit;
+                    //Physics.Raycast(ray, out hit, 1000);
+
+                    //chunkDict.Clear();
+                    if (hit.transform == null) break;
+                    playerPos = hit.transform.position;
                     for (int a = 0; a < Chunk.chunks.Count; a++)
                     {
                         Vector3 pos = Chunk.chunks[a].transform.position;
@@ -166,7 +184,7 @@ public class World : MonoBehaviour
 
     void CreateNPC(Chunk chunk)
     {
-        if (Random.value > 0.5)
+        if (Random.value > 0.1)
         {
             if (NPCPool.Count > 0)
             {
@@ -200,7 +218,7 @@ public class World : MonoBehaviour
                 {
                     p -= hit.normal / 4;
                 }
-               
+
                 p.x = Mathf.Floor(p.x);
                 p.y = Mathf.Floor(p.y);
                 p.z = Mathf.Floor(p.z);
@@ -216,39 +234,39 @@ public class World : MonoBehaviour
                             //float distance = Vector3.Distance(t, p);
                             //if (distance <= damageRadius)
                             //{
-                           
-                                if (x >= chunk.transform.position.x && x < (chunk.transform.position.x + chunkWidth) && z >= chunk.transform.position.z && z < (chunk.transform.position.z + chunkWidth) && y >= chunk.transform.position.y && y < (chunk.transform.position.y + chunkHeight))
+
+                            if (x >= chunk.transform.position.x && x < (chunk.transform.position.x + chunkWidth) && z >= chunk.transform.position.z && z < (chunk.transform.position.z + chunkWidth) && y >= chunk.transform.position.y && y < (chunk.transform.position.y + chunkHeight))
+                            {
+                                if (!chunkDict.ContainsKey(chunk))
                                 {
-                                    if (!chunkDict.ContainsKey(chunk))
-                                    {
-                                        chunkDict.Add(chunk, new List<Vector3> { t });
-                                    }
-                                    else
-                                    {
-                                        chunkDict[chunk].AddRange(new List<Vector3> { t });
-                                    }
+                                    chunkDict.Add(chunk, new List<Vector3> { t });
                                 }
                                 else
                                 {
-                                    chunkNew = Chunk.FindChunk(new Vector3(t.x, t.y, t.z));
-                                    if (chunkNew != null)
+                                    chunkDict[chunk].AddRange(new List<Vector3> { t });
+                                }
+                            }
+                            else
+                            {
+                                chunkNew = Chunk.FindChunk(new Vector3(t.x, t.y, t.z));
+                                if (chunkNew != null)
+                                {
+                                    if (!chunkDict.ContainsKey(chunkNew))
                                     {
-                                        if (!chunkDict.ContainsKey(chunkNew))
-                                        {
 
-                                            chunkDict.Add(chunkNew, new List<Vector3> { t });
+                                        chunkDict.Add(chunkNew, new List<Vector3> { t });
 
-                                        }
-                                        else
-                                        {
-                                            chunkDict[chunkNew].AddRange(new List<Vector3> { t });
-                                        }
                                     }
-                               
+                                    else
+                                    {
+                                        chunkDict[chunkNew].AddRange(new List<Vector3> { t });
+                                    }
                                 }
 
+                            }
+
                             Vector3 newChunkPos;
-                            if (t.x % chunkWidth == 0 || t.y % chunkHeight == 0 || t.z % chunkWidth == 0 )
+                            if (t.x % chunkWidth == 0 || t.y % chunkHeight == 0 || t.z % chunkWidth == 0)
                             {
 
                                 newChunkPos = new Vector3(Mathf.Floor((t.x - 1) / (float)chunkWidth) * chunkWidth, Mathf.Floor((t.y - 1F) / (float)chunkHeight) * chunkHeight, Mathf.Floor((t.z - 1F) / (float)chunkWidth) * chunkWidth);
@@ -257,7 +275,7 @@ public class World : MonoBehaviour
                                 {
                                     chunkNew2 = (Chunk)Instantiate(chunkFab, newChunkPos, Quaternion.identity);
                                     chunkNew2.CalculateMapFromScratch();
-                                   // Selection.activeGameObject = chunkNew2.gameObject;
+                                    // Selection.activeGameObject = chunkNew2.gameObject;
                                 }
                             }
                             if ((t.x + 1) % chunkWidth == 0 || (t.y + 1) % chunkHeight == 0 || (t.z + 1) % chunkWidth == 0)
